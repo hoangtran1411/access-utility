@@ -81,7 +81,8 @@ namespace AccessUtility.Web
             app.MapGet("/api/logs", (int limit = 50, string? level = null) =>
             {
                 var logs = LogViewer.GetLogs("app_logs.sqlite", limit, level) ?? new System.Collections.Generic.List<LogEntry>();
-                return Results.Json(logs, AppJsonContext.Default.ListLogEntry);
+                string json = System.Text.Json.JsonSerializer.Serialize(logs, AppJsonContext.Default.GetTypeInfo(typeof(List<LogEntry>))!);
+                return Results.Content(json, "application/json");
             });
 
             Console.WriteLine($"==================================================");
