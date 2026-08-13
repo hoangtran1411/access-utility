@@ -21,6 +21,12 @@ namespace AccessUtility.Models
         public List<GithubAsset> Assets { get; set; } = new();
     }
 
+    public class UpdateResponse
+    {
+        public bool Success { get; set; }
+        public string Message { get; set; } = string.Empty;
+    }
+
     [JsonSerializable(typeof(GithubRelease))]
     [JsonSerializable(typeof(GithubAsset))]
     [JsonSerializable(typeof(List<GithubAsset>))]

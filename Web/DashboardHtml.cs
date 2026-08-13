@@ -184,7 +184,10 @@ namespace AccessUtility.Web
             <span class="brand-badge">Native AOT</span>
             <h1>Access 97 Compact & Repair Utility</h1>
         </div>
-        <span style="color: var(--text-secondary); font-size: 0.9rem;">.NET 10 | Jet 3.5 Engine</span>
+        <div style="display: flex; align-items: center; gap: 1rem;">
+            <button onclick="triggerAutoUpdate()" class="secondary" style="padding: 0.4rem 0.8rem; font-size: 0.85rem;">Check for Updates</button>
+            <span style="color: var(--text-secondary); font-size: 0.9rem;">.NET 10 | Jet 3.5 Engine</span>
+        </div>
     </header>
 
     <!-- File Selector Card -->
@@ -396,6 +399,20 @@ namespace AccessUtility.Web
                 });
             } catch (e) {
                 console.error("Failed to load logs", e);
+            }
+        }
+
+        async function triggerAutoUpdate() {
+            if (!confirm('Check GitHub for a newer version of AccessUtility?')) return;
+            document.getElementById('logCard').classList.remove('hidden');
+            log('Checking for new version release on GitHub...');
+            try {
+                const res = await fetch('/api/update', { method: 'POST' });
+                const data = await res.json();
+                log(data.message);
+                alert(data.message);
+            } catch (e) {
+                log('Auto update check failed: ' + e);
             }
         }
     </script>

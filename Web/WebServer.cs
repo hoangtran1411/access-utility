@@ -85,6 +85,24 @@ namespace AccessUtility.Web
                 return Results.Content(json, "application/json");
             });
 
+            // API: Auto Update
+            app.MapPost("/api/update", async () =>
+            {
+                try
+                {
+                    await AutoUpdater.CheckAndUpdateAsync();
+                    return Results.Json(new UpdateResponse 
+                    { 
+                        Success = true, 
+                        Message = "Update process executed. Check server console for status details." 
+                    }, AppJsonContext.Default.UpdateResponse);
+                }
+                catch (Exception ex)
+                {
+                    return Results.Json(new UpdateResponse { Success = false, Message = $"Update failed: {ex.Message}" }, AppJsonContext.Default.UpdateResponse);
+                }
+            });
+
             Console.WriteLine($"==================================================");
             Console.WriteLine($" Access 97 Utility Web Dashboard Running!");
             Console.WriteLine($" URL: http://localhost:{port}");
