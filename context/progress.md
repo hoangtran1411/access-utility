@@ -15,7 +15,9 @@
 | **Jet 3.5 Repairer Engine** | `Engine/Jet3Repairer.cs` | `COMPLETED` | Deep sector page recovery, corrupt page bypassing verified |
 | **Exporters (SQLite, SQL, CSV)** | `Exporters/` | `COMPLETED` | Native AOT compatible exporters verified |
 | **CLI & Web Dashboard** | `Program.cs`, `Web/` | `COMPLETED` | Interactive CLI menu & embedded ASP.NET Core Web UI |
-| **xUnit Test Suite** | `AccessUtility.Tests/` | `COMPLETED` | 8/8 automated unit tests passing |
+| **AX AI Natural Language Engine** | `Engine/AxAssistant.cs` | `COMPLETED` | Natural language maintenance planner & REPL runner |
+| **Cobra CLI & Rich TUI Engine** | `Engine/CommandRegistry.cs`, `Engine/TuiEngine.cs` | `COMPLETED` | Cobra command tree, aliases, & rich terminal interface |
+| **xUnit Test Suite** | `AccessUtility.Tests/` | `COMPLETED` | 10/10 automated unit tests passing |
 | **GitHub Actions CI/CD** | `.github/workflows/ci-cd.yml` | `COMPLETED` | Multi-OS Native AOT matrix & GitHub Release workflow |
 | **Modern .NET 10 Solution** | `AccessUtility.slnx` | `COMPLETED` | XML solution format verified |
 | **Documentation Series** | `README.md`, `docs/01-05` | `COMPLETED` | Complete 5-part learning series |

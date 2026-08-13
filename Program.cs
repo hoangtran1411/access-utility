@@ -10,46 +10,74 @@ namespace AccessUtility
     {
         private static void Main(string[] args)
         {
-            Console.Title = "Access 97 Utility - Compact, Repair & Lock Inspector (.NET 10 Native AOT)";
+            Console.Title = "Access 97 Utility - AX AI Engine & Cobra CLI (.NET 10 Native AOT)";
 
             if (args.Length == 0)
             {
-                RunInteractiveMenu();
+                TuiEngine.RunInteractiveTui();
                 return;
             }
 
             string command = args[0].ToLower();
 
+            if (command is "--help" or "-h" or "help")
+            {
+                CommandRegistry.PrintCobraHelp();
+                return;
+            }
+
             switch (command)
             {
-                case "lockstat":
-                    if (args.Length < 2) { PrintUsage(); return; }
+                case "lockstat" or "ls" or "locks":
+                    if (args.Length < 2) { CommandRegistry.PrintCobraHelp(); return; }
                     RunLockStatCommand(args[1]);
                     break;
 
-                case "diagnose":
-                    if (args.Length < 2) { PrintUsage(); return; }
+                case "diagnose" or "diag" or "health":
+                    if (args.Length < 2) { CommandRegistry.PrintCobraHelp(); return; }
                     RunDiagnoseCommand(args[1]);
                     break;
 
-                case "compact":
-                    if (args.Length < 2) { PrintUsage(); return; }
+                case "compact" or "cmp" or "defrag":
+                    if (args.Length < 2) { CommandRegistry.PrintCobraHelp(); return; }
                     string compactTarget = GetArgValue(args, "--output") ?? Path.ChangeExtension(args[1], ".compacted.mdb");
                     bool forceCompact = HasFlag(args, "--force-unlock");
                     RunCompactCommand(args[1], compactTarget, forceCompact);
                     break;
 
-                case "repair":
-                    if (args.Length < 2) { PrintUsage(); return; }
+                case "repair" or "rep" or "recover":
+                    if (args.Length < 2) { CommandRegistry.PrintCobraHelp(); return; }
                     string repairTarget = GetArgValue(args, "--output") ?? Path.ChangeExtension(args[1], ".repaired.mdb");
                     bool forceRepair = HasFlag(args, "--force-unlock");
                     RunRepairCommand(args[1], repairTarget, forceRepair);
                     break;
 
-                case "export":
-                    if (args.Length < 2) { PrintUsage(); return; }
+                case "export" or "exp" or "convert":
+                    if (args.Length < 2) { CommandRegistry.PrintCobraHelp(); return; }
                     string fmt = GetArgValue(args, "--format") ?? "sqlite";
                     RunExportCommand(args[1], fmt);
+                    break;
+
+                case "ax" or "ai" or "ask":
+                    string query = args.Length >= 2 ? string.Join(" ", args[1..]) : "";
+                    if (string.IsNullOrWhiteSpace(query))
+                    {
+                        Console.Write("AX Query > ");
+                        query = Console.ReadLine() ?? "";
+                    }
+                    var plan = AxAssistant.InterpretQuery(query);
+                    AxAssistant.ExecutePlan(plan);
+                    break;
+
+                case "tui":
+                    TuiEngine.RunInteractiveTui();
+                    break;
+
+                case "web" or "ui" or "dashboard":
+                    int port = 5000;
+                    string? portStr = GetArgValue(args, "--port");
+                    if (int.TryParse(portStr, out int p)) port = p;
+                    WebServer.StartServer(port);
                     break;
 
                 case "test":
@@ -64,46 +92,11 @@ namespace AccessUtility
                     RunExportCommand(testFile, "sqlite");
                     break;
 
-                case "web":
-                    int port = 5000;
-                    string? portStr = GetArgValue(args, "--port");
-                    if (int.TryParse(portStr, out int p)) port = p;
-                    WebServer.StartServer(port);
-                    break;
-
                 default:
                     Console.WriteLine($"Unknown command '{command}'.");
-                    PrintUsage();
+                    CommandRegistry.PrintCobraHelp();
                     break;
             }
-        }
-
-        private static void PrintUsage()
-        {
-            Console.WriteLine("""
-
-========================================================================
- MS Access 97 (.mdb) Utility - Native AOT Engine
- Focus: Compact, Repair & Lock File (.ldb) Inspector
-========================================================================
-
-Usage:
-  AccessUtility.exe <command> <file.mdb> [options]
-
-Commands:
-  lockstat <file.mdb>                            Inspect .ldb lock file & active user connections
-  diagnose <file.mdb>                            Run health & page fragmentation diagnostics
-  compact  <file.mdb> [--output target] [--force-unlock]  Defragment & minimize .mdb file size
-  repair   <file.mdb> [--output target] [--force-unlock]  Deep sector repair & data recovery
-  export   <file.mdb> [--format sqlite|sql|csv]  Export database to SQLite, SQL, or CSV
-  web      [--port 5000]                         Launch Web Dashboard UI in browser
-
-Examples:
-  AccessUtility.exe lockstat C:\DB\Data97.mdb
-  AccessUtility.exe compact C:\DB\Data97.mdb --output C:\DB\Data97_Clean.mdb
-  AccessUtility.exe repair C:\DB\Corrupt97.mdb --force-unlock
-  AccessUtility.exe web --port 5000
-""");
         }
 
         private static void RunLockStatCommand(string mdbPath, bool promptCleanup = true)
@@ -217,34 +210,6 @@ Examples:
             };
 
             Console.WriteLine($"[SUCCESS] Exported successfully to: {outPath}");
-        }
-
-        private static void RunInteractiveMenu()
-        {
-            PrintUsage();
-            Console.Write("\nSelect action (1=LockStat, 2=Diagnose, 3=Compact, 4=Repair, 5=Web Dashboard, 0=Exit): ");
-            string? choice = Console.ReadLine();
-
-            if (choice == "5")
-            {
-                WebServer.StartServer(5000);
-            }
-            else if (choice is "1" or "2" or "3" or "4")
-            {
-                Console.Write("Enter path to Access 97 .mdb file: ");
-                string? file = Console.ReadLine()?.Trim('"');
-
-                if (string.IsNullOrWhiteSpace(file) || !File.Exists(file))
-                {
-                    Console.WriteLine("File not found.");
-                    return;
-                }
-
-                if (choice == "1") RunLockStatCommand(file);
-                else if (choice == "2") RunDiagnoseCommand(file);
-                else if (choice == "3") RunCompactCommand(file, Path.ChangeExtension(file, ".compacted.mdb"), false);
-                else if (choice == "4") RunRepairCommand(file, Path.ChangeExtension(file, ".repaired.mdb"), false);
-            }
         }
 
         private static string? GetArgValue(string[] args, string flag)
