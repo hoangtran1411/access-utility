@@ -409,8 +409,9 @@ namespace AccessUtility.Web
             try {
                 const res = await fetch('/api/update', { method: 'POST' });
                 const data = await res.json();
-                log(data.message);
-                alert(data.message);
+                const msg = data.message || data.Message || 'Update check completed.';
+                log(msg);
+                alert(msg);
             } catch (e) {
                 log('Auto update check failed: ' + e);
             }
