@@ -42,6 +42,7 @@ Check out the `docs/` folder for comprehensive guides:
 5. [Building, Testing & CI/CD](docs/05-building-testing-and-cicd.md)
 6. [Complete CLI Usage Commands](docs/06-cli-usage.md)
 7. [Serilog Configuration & Telemetry](docs/07-serilog-configuration.md)
+8. [SQLite Log Viewer Guide](docs/08-log-viewer-guide.md)
 
 ## 🤝 Contributing
 See [CONTRIBUTING.md](CONTRIBUTING.md) for details on how you can help.

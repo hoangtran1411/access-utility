@@ -140,6 +140,16 @@ namespace AccessUtility.Engine
                 },
                 new CommandDescriptor
                 {
+                    Name = "logs",
+                    Aliases = new[] { "log", "tail" },
+                    Summary = "View and filter the local SQLite application logs",
+                    Description = "Reads the Serilog SQLite database (app_logs.sqlite) and prints color-coded logs to the terminal. Supports filtering by level and tailing recent entries.",
+                    Usage = "AccessUtility.exe logs [--tail <count>] [--level <info|warning|error>]",
+                    Flags = new List<string> { "--tail", "--level", "--db" },
+                    Examples = new List<string> { "AccessUtility.exe logs --tail 20", "AccessUtility.exe logs --level error" }
+                },
+                new CommandDescriptor
+                {
                     Name = "update",
                     Aliases = new string[0],
                     Summary = "Update AccessUtility to the latest release",

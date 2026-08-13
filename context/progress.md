@@ -63,6 +63,11 @@
 - [x] Implement seamless binary replacement
 - [x] Add `AccessUtility.exe update` CLI command
 
+### 📜 [Feature 08: SQLite Log Viewer](08-feature-log-viewer.md) ✅ COMPLETED
+- [x] Ensure `CREATE TABLE` migration runs on first startup (already in `SqliteLogSink`)
+- [x] Build `Engine/LogViewer.cs` to query logs
+- [x] Add CLI `logs` command with `--tail` and `--level` filters
+
 ## 📈 Status Overview
 ```text
 [X] Core Foundation (10/10 Tasks Completed)
@@ -72,4 +77,5 @@
 [X] Feature 04: Query SQL Extractor (4/4 Tasks) ✅
 [X] Feature 05: Maintenance Daemon (4/4 Tasks) ✅
 [X] Feature 07: GitHub Auto Updater (4/4 Tasks) ✅
+[X] Feature 08: SQLite Log Viewer (3/3 Tasks) ✅
 ```

@@ -102,6 +102,15 @@ namespace AccessUtility
                     AutoUpdater.CheckAndUpdateAsync().GetAwaiter().GetResult();
                     break;
 
+                case "logs":
+                    string logDbPath = GetArgValue(args, "--db") ?? "app_logs.sqlite";
+                    string tailStr = GetArgValue(args, "--tail") ?? "50";
+                    string levelFilter = GetArgValue(args, "--level") ?? string.Empty;
+                    int tail = 50;
+                    if (int.TryParse(tailStr, out int t)) tail = t;
+                    LogViewer.ShowLogs(logDbPath, tail, levelFilter);
+                    break;
+
                 case "ax" or "ai" or "ask":
                     string query = args.Length >= 2 ? string.Join(" ", args[1..]) : "";
                     if (string.IsNullOrWhiteSpace(query))
