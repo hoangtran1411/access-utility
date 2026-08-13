@@ -88,6 +88,16 @@ namespace AccessUtility
                     RunExtractQueriesCommand(args[1], queriesOut);
                     break;
 
+                case "daemon":
+                    if (args.Length < 2) { CommandRegistry.PrintCobraHelp(); return; }
+                    string backupDir = GetArgValue(args, "--backup-dir") ?? "./backups";
+                    string intervalStr = GetArgValue(args, "--interval") ?? "24h";
+                    TimeSpan interval = TimeSpan.FromHours(24);
+                    if (intervalStr.EndsWith("h") && double.TryParse(intervalStr.TrimEnd('h'), out double h)) interval = TimeSpan.FromHours(h);
+                    if (intervalStr.EndsWith("m") && double.TryParse(intervalStr.TrimEnd('m'), out double m)) interval = TimeSpan.FromMinutes(m);
+                    RunDaemonCommand(args[1], interval, backupDir);
+                    break;
+
                 case "ax" or "ai" or "ask":
                     string query = args.Length >= 2 ? string.Join(" ", args[1..]) : "";
                     if (string.IsNullOrWhiteSpace(query))
@@ -381,6 +391,19 @@ namespace AccessUtility
                     Console.WriteLine($"  [SQL] {q.Name} (ObjectId: {q.ObjectId})");
                 }
             }
+        }
+
+        private static void RunDaemonCommand(string mdbPath, TimeSpan interval, string backupDir)
+        {
+            using var cts = new System.Threading.CancellationTokenSource();
+            
+            Console.CancelKeyPress += (sender, e) =>
+            {
+                e.Cancel = true;
+                cts.Cancel();
+            };
+
+            MaintenanceDaemon.RunDaemon(mdbPath, interval, backupDir, cts.Token);
         }
 
         private static void RunExportCommand(string mdbPath, string format)

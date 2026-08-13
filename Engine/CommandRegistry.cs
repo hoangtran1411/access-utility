@@ -126,6 +126,20 @@ namespace AccessUtility.Engine
                 },
                 new CommandDescriptor
                 {
+                    Name = "daemon",
+                    Aliases = new[] { "maintain" },
+                    Summary = "Run automated background maintenance",
+                    Description = "Periodically cleans orphan locks, compacts database if fragmented > 15%, and generates ZIP backups.",
+                    Usage = "AccessUtility.exe daemon <file.mdb> [--interval 24h] [--backup-dir ./backups]",
+                    Flags = new List<string> { "--interval <hours>", "--backup-dir <dir>" },
+                    Examples = new List<string>
+                    {
+                        "AccessUtility.exe daemon Products97.mdb",
+                        "AccessUtility.exe daemon Products97.mdb --interval 12h --backup-dir D:\\Backups"
+                    }
+                },
+                new CommandDescriptor
+                {
                     Name = "ax",
                     Aliases = new[] { "ai", "ask" },
                     Summary = "AX (AI Experiment) Natural Language Command Assistant",

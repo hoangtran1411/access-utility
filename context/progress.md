@@ -51,11 +51,11 @@
 - [x] Add `AccessUtility.exe extract-queries <mdb_path>` CLI command
 - [x] Add xUnit tests for Query extraction (`AccessUtility.Tests/QueryExtractorTests.cs`)
 
-### ⏰ [Feature 05: Maintenance Daemon & Backup Scheduler](05-feature-maintenance-daemon.md)
-- [ ] Build background polling loop `Engine/DaemonRunner.cs`
-- [ ] Implement conditional compaction based on `.ldb` presence (Wait until 3 AM and no users)
-- [ ] Add `AccessUtility.exe daemon run` CLI command
-- [ ] Setup scheduled Windows Task / systemd integration docs
+### ⏰ [Feature 05: Maintenance Daemon & Backup Scheduler](05-feature-maintenance-daemon.md) ✅ COMPLETED
+- [x] Build background polling loop `Engine/MaintenanceDaemon.cs`
+- [x] Implement conditional compaction based on `.ldb` presence (Wait until 3 AM and no users)
+- [x] Add `AccessUtility.exe daemon run` CLI command
+- [x] Setup scheduled Windows Task / systemd integration docs
 
 ## 📈 Status Overview
 ```text
@@ -64,5 +64,5 @@
 [X] Feature 02: Schema Diff Engine (4/4 Tasks) ✅
 [X] Feature 03: OLE File Extractor (4/4 Tasks) ✅
 [X] Feature 04: Query SQL Extractor (4/4 Tasks) ✅
-[ ] Feature 05: Maintenance Daemon (0/4 Tasks)
+[X] Feature 05: Maintenance Daemon (4/4 Tasks) ✅
 ```
