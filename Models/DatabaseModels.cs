@@ -159,4 +159,60 @@ namespace AccessUtility.Models
         public string InspectionStatus { get; set; } = string.Empty;
         public string ErrorMessage { get; set; } = string.Empty;
     }
+
+    // ── Feature 02: Schema Diff & Migration Generator ─────────────────────────
+
+    public enum TableDiffType { Added, Removed, Modified }
+    public enum ColumnDiffType { Added, Removed, Modified }
+
+    /// <summary>A snapshot of a column's schema at a point in time.</summary>
+    public class ColumnSnapshot
+    {
+        public string Name { get; set; } = string.Empty;
+        public JetDataType DataType { get; set; }
+        public int Length { get; set; }
+        public bool IsNullable { get; set; }
+        public bool IsAutoNumber { get; set; }
+        public bool IsVariableLength { get; set; }
+    }
+
+    /// <summary>Describes a single column-level schema change.</summary>
+    public class ColumnDiff
+    {
+        public string ColumnName { get; set; } = string.Empty;
+        public ColumnDiffType DiffType { get; set; }
+        public JetDataType OldDataType { get; set; }
+        public JetDataType NewDataType { get; set; }
+        public int OldLength { get; set; }
+        public int NewLength { get; set; }
+        public bool IsNullable { get; set; }
+        public bool TypeChanged { get; set; }
+        public bool LengthChanged { get; set; }
+        public bool NullableChanged { get; set; }
+    }
+
+    /// <summary>Describes a table-level schema difference (added, removed, or modified with column diffs).</summary>
+    public class TableDiff
+    {
+        public string TableName { get; set; } = string.Empty;
+        public TableDiffType DiffType { get; set; }
+        public List<ColumnSnapshot> Columns { get; set; } = new();
+        public List<ColumnDiff> AddedColumns { get; set; } = new();
+        public List<ColumnDiff> RemovedColumns { get; set; } = new();
+        public List<ColumnDiff> ModifiedColumns { get; set; } = new();
+        public int SourceRowCount { get; set; }
+        public int TargetRowCount { get; set; }
+        public int RowCountDifference { get; set; }
+    }
+
+    /// <summary>Full result of comparing two Access 97 database schemas.</summary>
+    public class SchemaDiffResult
+    {
+        public string SourcePath { get; set; } = string.Empty;
+        public string TargetPath { get; set; } = string.Empty;
+        public bool HasDifferences { get; set; }
+        public List<TableDiff> AddedTables { get; set; } = new();
+        public List<TableDiff> RemovedTables { get; set; } = new();
+        public List<TableDiff> ModifiedTables { get; set; } = new();
+    }
 }

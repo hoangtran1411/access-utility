@@ -84,6 +84,20 @@ namespace AccessUtility.Engine
                 },
                 new CommandDescriptor
                 {
+                    Name = "diff",
+                    Aliases = new[] { "compare" },
+                    Summary = "Compare two databases & generate SQL migration script",
+                    Description = "Compares Source (Dev) and Target (Prod) schemas (tables, columns, data types). Generates ANSI SQL, SQLite, PostgreSQL, or SQL Server DDL migration scripts.",
+                    Usage = "AccessUtility.exe diff <source.mdb> <target.mdb> [--output migration.sql] [--dialect ansi|sqlite|pgsql|mssql]",
+                    Flags = new List<string> { "--output <path>", "--dialect <ansi|sqlite|pgsql|mssql>" },
+                    Examples = new List<string>
+                    {
+                        "AccessUtility.exe diff Dev.mdb Prod.mdb",
+                        "AccessUtility.exe diff Dev.mdb Prod.mdb --dialect pgsql --output up.sql"
+                    }
+                },
+                new CommandDescriptor
+                {
                     Name = "ax",
                     Aliases = new[] { "ai", "ask" },
                     Summary = "AX (AI Experiment) Natural Language Command Assistant",

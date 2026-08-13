@@ -33,11 +33,11 @@
 - [x] Add xUnit unit tests in `AccessUtility.Tests/SecurityReaderTests.cs` (15 tests: decrypt, encrypt round-trip, version detect, inspect DB, inspect workgroup)
 - [x] Register `password` command in Cobra CLI registry (`Engine/CommandRegistry.cs`)
 
-### 🔍 [Feature 02: Schema Diff & Migration Generator](02-feature-schema-diff-migration.md)
-- [ ] Implement database schema comparator (`Engine/SchemaComparer.cs`)
-- [ ] Implement SQL migration script generator (`Exporters/MigrationScriptExporter.cs`)
-- [ ] Add `AccessUtility.exe diff <dev.mdb> <prod.mdb>` CLI command
-- [ ] Add xUnit unit tests in `AccessUtility.Tests/SchemaComparerTests.cs`
+### 🔍 [Feature 02: Schema Diff & Migration Generator](02-feature-schema-diff-migration.md) ✅ COMPLETED
+- [x] Implement database schema comparator (`Engine/SchemaComparer.cs`)
+- [x] Implement SQL migration script generator (`Exporters/MigrationScriptExporter.cs`)
+- [x] Add `AccessUtility.exe diff <dev.mdb> <prod.mdb>` CLI command
+- [x] Add xUnit unit tests in `AccessUtility.Tests/SchemaComparerTests.cs`
 
 ### 🖼️ [Feature 03: OLE Object & Embedded File Extractor](03-feature-ole-object-extractor.md)
 - [ ] Implement 78-byte Access OLE container header stripper (`Engine/OleExtractor.cs`)
@@ -64,7 +64,7 @@
 ```text
 [X] Core Foundation (10/10 Tasks Completed)
 [X] Feature 01: Database Password Inspector (5/5 Tasks) ✅
-[ ] Feature 02: Schema Diff Engine (0/4 Tasks)
+[X] Feature 02: Schema Diff Engine (4/4 Tasks) ✅
 [ ] Feature 03: OLE File Extractor (0/4 Tasks)
 [ ] Feature 04: Query SQL Extractor (0/4 Tasks)
 [ ] Feature 05: Maintenance Daemon (0/4 Tasks)

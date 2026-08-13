@@ -64,6 +64,13 @@ namespace AccessUtility
                     RunPasswordCommand(args[1], mdwPath);
                     break;
 
+                case "diff" or "compare":
+                    if (args.Length < 3) { CommandRegistry.PrintCobraHelp(); return; }
+                    string diffOut = GetArgValue(args, "--output") ?? Path.ChangeExtension(args[1], ".diff.sql");
+                    string diffDialect = GetArgValue(args, "--dialect") ?? "ansi";
+                    RunDiffCommand(args[1], args[2], diffOut, diffDialect);
+                    break;
+
                 case "ax" or "ai" or "ask":
                     string query = args.Length >= 2 ? string.Join(" ", args[1..]) : "";
                     if (string.IsNullOrWhiteSpace(query))
@@ -260,6 +267,36 @@ namespace AccessUtility
                         }
                     }
                 }
+            }
+        }
+
+        private static void RunDiffCommand(string sourceMdb, string targetMdb, string outputPath, string dialect)
+        {
+            Console.WriteLine($"\n[+] Comparing Schemas: {Path.GetFileName(sourceMdb)} vs {Path.GetFileName(targetMdb)}");
+
+            var sourceDb = Jet3BinaryReader.ReadDatabase(sourceMdb, out var srcReport);
+            if (srcReport.CorruptPagesCount > 0)
+            {
+                Console.WriteLine($"[WARNING] Source DB has {srcReport.CorruptPagesCount} corrupted pages.");
+            }
+
+            var targetDb = Jet3BinaryReader.ReadDatabase(targetMdb, out var tgtReport);
+            if (tgtReport.CorruptPagesCount > 0)
+            {
+                Console.WriteLine($"[WARNING] Target DB has {tgtReport.CorruptPagesCount} corrupted pages.");
+            }
+
+            var diff = SchemaComparer.Compare(sourceDb, targetDb);
+
+            // Print summary report to console
+            string report = MigrationScriptExporter.GenerateDiffReport(diff);
+            Console.WriteLine(report);
+
+            if (diff.HasDifferences)
+            {
+                Console.WriteLine($"\n[+] Generating {dialect.ToUpper()} Migration Script: {outputPath}");
+                MigrationScriptExporter.GenerateMigrationScript(diff, outputPath, dialect);
+                Console.WriteLine($"[SUCCESS] Script generated successfully.");
             }
         }
 
