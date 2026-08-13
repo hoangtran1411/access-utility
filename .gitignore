@@ -1,0 +1,33 @@
+# .NET Build & Publish Folders
+[Bb]in/
+[Oo]bj/
+[Pp]ublish/
+
+# Visual Studio & IDE Files
+.vs/
+.vscode/
+.idea/
+*.user
+*.userosscache
+*.sln.docstates
+*.suo
+*.userprefs
+
+# Generated Native Binaries & Artifacts
+*.exe
+*.dll
+*.pdb
+
+# Test & Sample Databases
+sample97.*
+*.compacted.mdb
+*.repaired.mdb
+*.sqlite
+*.sql
+*.csv
+*.ldb
+
+# OS Generated Files
+Thumbs.db
+[Dd]esktop.ini
+.DS_Store
