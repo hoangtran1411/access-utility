@@ -1,0 +1,23 @@
+version: 2
+updates:
+  # Maintain dependencies for GitHub Actions
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    commit-message:
+      prefix: "ci"
+      include: "scope"
+
+  # Maintain dependencies for .NET (NuGet)
+  - package-ecosystem: "nuget"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    commit-message:
+      prefix: "build"
+      include: "scope"
+    ignore:
+      # Ignore specific vulnerable packages if we want to lock them intentionally
+      # - dependency-name: "SQLitePCLRaw.bundle_e_sqlite3"
+      #   versions: ["< 3.0.5"]
