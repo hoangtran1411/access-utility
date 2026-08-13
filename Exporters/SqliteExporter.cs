@@ -76,6 +76,8 @@ namespace AccessUtility.Exporters
             }
 
             transaction.Commit();
+            conn.Close();
+            SqliteConnection.ClearAllPools();
             return outputSqlitePath;
         }
 

@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="AccessUtility.csproj" />
+  <Project Path="AccessUtility.Tests/AccessUtility.Tests.csproj" />
+</Solution>
