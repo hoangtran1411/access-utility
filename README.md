@@ -34,9 +34,14 @@ dotnet publish -c Release
 ## 📖 Documentation
 
 Check out the `docs/` folder for comprehensive guides:
-1. [Introduction to AccessUtility](docs/01-introduction.md)
-2. [CLI Usage & Commands](docs/02-cli-usage.md)
-3. [Serilog Configuration](docs/03-serilog-configuration.md)
+0. [Beginner's Guide to AccessUtility](docs/00-beginner-guide.md)
+1. [Introduction & Architecture](docs/01-introduction-and-architecture.md)
+2. [Lock File (.ldb) Inspector Guide](docs/02-lock-file-inspector-guide.md)
+3. [Compact & Repair Engine](docs/03-compact-and-repair-engine.md)
+4. [CLI & Web UI Guide](docs/04-cli-and-web-ui-guide.md)
+5. [Building, Testing & CI/CD](docs/05-building-testing-and-cicd.md)
+6. [Complete CLI Usage Commands](docs/06-cli-usage.md)
+7. [Serilog Configuration & Telemetry](docs/07-serilog-configuration.md)
 
 ## 🤝 Contributing
 See [CONTRIBUTING.md](CONTRIBUTING.md) for details on how you can help.
