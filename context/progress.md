@@ -45,11 +45,11 @@
 - [x] Add `AccessUtility.exe extract-ole <mdb_path>` CLI command
 - [x] Add xUnit unit tests in `AccessUtility.Tests/OleExtractorTests.cs`
 
-### 📝 [Feature 04: Access Query (MSysQueries) SQL Extractor](04-feature-query-sql-extractor.md)
-- [ ] Reverse engineer Jet query encoding (MSysQueries)
-- [ ] Map Jet opcodes (e.g., `0x00`, `0x06`, `0x0A`) to SQL clauses (SELECT, FROM, WHERE, ORDER BY)
-- [ ] Add `AccessUtility.exe extract-queries <mdb_path>` CLI command
-- [ ] Add xUnit tests for Query extraction (`AccessUtility.Tests/QueryExtractorTests.cs`)
+### 📝 [Feature 04: Access Query (MSysQueries) SQL Extractor](04-feature-query-sql-extractor.md) ✅ COMPLETED
+- [x] Reverse engineer Jet query encoding (MSysQueries)
+- [x] Map Jet opcodes (e.g., `0x00`, `0x06`, `0x0A`) to SQL clauses (SELECT, FROM, WHERE, ORDER BY)
+- [x] Add `AccessUtility.exe extract-queries <mdb_path>` CLI command
+- [x] Add xUnit tests for Query extraction (`AccessUtility.Tests/QueryExtractorTests.cs`)
 
 ### ⏰ [Feature 05: Maintenance Daemon & Backup Scheduler](05-feature-maintenance-daemon.md)
 - [ ] Build background polling loop `Engine/DaemonRunner.cs`
@@ -63,6 +63,6 @@
 [X] Feature 01: Database Password Inspector (5/5 Tasks) ✅
 [X] Feature 02: Schema Diff Engine (4/4 Tasks) ✅
 [X] Feature 03: OLE File Extractor (4/4 Tasks) ✅
-[ ] Feature 04: Query SQL Extractor (0/4 Tasks)
+[X] Feature 04: Query SQL Extractor (4/4 Tasks) ✅
 [ ] Feature 05: Maintenance Daemon (0/4 Tasks)
 ```

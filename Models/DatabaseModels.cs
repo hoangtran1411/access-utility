@@ -233,4 +233,19 @@ namespace AccessUtility.Models
         public string OutputDirectory { get; set; } = string.Empty;
         public List<ExtractedOleFile> ExtractedFiles { get; set; } = new();
     }
+
+    // ── Feature 04: Access Query SQL Extractor ───────────────────────────────
+
+    public class ExtractedQuery
+    {
+        public string Name { get; set; } = string.Empty;
+        public int ObjectId { get; set; }
+        public string SqlText { get; set; } = string.Empty;
+    }
+
+    public class QueryExtractionReport
+    {
+        public string OutputDirectory { get; set; } = string.Empty;
+        public List<ExtractedQuery> Queries { get; set; } = new();
+    }
 }

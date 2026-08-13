@@ -112,6 +112,20 @@ namespace AccessUtility.Engine
                 },
                 new CommandDescriptor
                 {
+                    Name = "extract-queries",
+                    Aliases = new[] { "queries" },
+                    Summary = "Extract saved queries to SQL files",
+                    Description = "Parses MSysQueries and MSysObjects to reconstruct SQL SELECT, JOIN, WHERE, GROUP BY clauses.",
+                    Usage = "AccessUtility.exe extract-queries <file.mdb> [--output ./queries]",
+                    Flags = new List<string> { "--output <dir>" },
+                    Examples = new List<string>
+                    {
+                        "AccessUtility.exe extract-queries Products97.mdb",
+                        "AccessUtility.exe extract-queries Products97.mdb --output ./out"
+                    }
+                },
+                new CommandDescriptor
+                {
                     Name = "ax",
                     Aliases = new[] { "ai", "ask" },
                     Summary = "AX (AI Experiment) Natural Language Command Assistant",

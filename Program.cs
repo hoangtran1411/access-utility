@@ -82,6 +82,12 @@ namespace AccessUtility
                     RunExtractOleCommand(args[1], oleOut);
                     break;
 
+                case "extract-queries" or "queries":
+                    if (args.Length < 2) { CommandRegistry.PrintCobraHelp(); return; }
+                    string queriesOut = GetArgValue(args, "--output") ?? "./extracted_queries";
+                    RunExtractQueriesCommand(args[1], queriesOut);
+                    break;
+
                 case "ax" or "ai" or "ask":
                     string query = args.Length >= 2 ? string.Join(" ", args[1..]) : "";
                     if (string.IsNullOrWhiteSpace(query))
@@ -345,6 +351,34 @@ namespace AccessUtility
                 foreach (var file in report.ExtractedFiles)
                 {
                     Console.WriteLine($"  [{file.FileType.ToUpper()}] {file.TableName}.{file.ColumnName} -> {Path.GetFileName(file.FilePath)} ({file.SizeBytes} bytes)");
+                }
+            }
+        }
+
+        private static void RunExtractQueriesCommand(string mdbPath, string outputDir)
+        {
+            Log.Information("Executing ExtractQueriesCommand on {Path} to {OutputDir}", mdbPath, outputDir);
+            Console.WriteLine($"\n[+] Extracting SQL Queries from: {mdbPath}");
+            Console.WriteLine($"    Output Directory: {outputDir}");
+
+            var db = Jet3BinaryReader.ReadDatabase(mdbPath, out var diag);
+            if (diag.CorruptPagesCount > 0)
+            {
+                Console.WriteLine($"[WARNING] Database has {diag.CorruptPagesCount} corrupted pages. Extraction may be incomplete.");
+            }
+
+            var report = QueryExtractor.ExtractQueries(db, outputDir);
+
+            if (report.Queries.Count == 0)
+            {
+                Console.WriteLine("\n[INFO] No saved queries found (or MSysQueries is missing).");
+            }
+            else
+            {
+                Console.WriteLine($"\n[SUCCESS] Extracted {report.Queries.Count} queries.");
+                foreach (var q in report.Queries)
+                {
+                    Console.WriteLine($"  [SQL] {q.Name} (ObjectId: {q.ObjectId})");
                 }
             }
         }
