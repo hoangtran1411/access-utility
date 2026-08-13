@@ -58,6 +58,12 @@ namespace AccessUtility
                     RunExportCommand(args[1], fmt);
                     break;
 
+                case "password" or "pw" or "security":
+                    if (args.Length < 2) { CommandRegistry.PrintCobraHelp(); return; }
+                    string? mdwPath = GetArgValue(args, "--workgroup");
+                    RunPasswordCommand(args[1], mdwPath);
+                    break;
+
                 case "ax" or "ai" or "ask":
                     string query = args.Length >= 2 ? string.Join(" ", args[1..]) : "";
                     if (string.IsNullOrWhiteSpace(query))
@@ -194,6 +200,66 @@ namespace AccessUtility
             else
             {
                 Console.WriteLine($"\n[FAILED] {res.Message}");
+            }
+        }
+
+        private static void RunPasswordCommand(string mdbPath, string? mdwPath)
+        {
+            Console.WriteLine($"\n[+] Inspecting Access 97 Database Security: {Path.GetFileName(mdbPath)}");
+            Console.WriteLine($"    File: {mdbPath}\n");
+
+            var sec = Engine.SecurityReader.InspectDatabase(mdbPath);
+
+            if (!string.IsNullOrEmpty(sec.ErrorMessage))
+            {
+                Console.WriteLine($"[ERROR] {sec.ErrorMessage}");
+                return;
+            }
+
+            Console.WriteLine($"  Jet Version        : {sec.JetVersion}");
+            Console.WriteLine($"  Valid Jet Database : {sec.IsValidJetDatabase}");
+            Console.WriteLine($"  Password Protected : {sec.IsPasswordProtected}");
+            Console.WriteLine($"  Database Password  : {(sec.IsPasswordProtected ? $"\"{sec.DatabasePassword}\"" : "(none)" )}");
+            Console.WriteLine($"  User-Level Security: {sec.HasUserLevelSecurity}");
+            Console.WriteLine($"  Encrypted At Rest  : {sec.IsEncryptedAtRest}");
+            Console.WriteLine($"  Owner SID          : {(string.IsNullOrEmpty(sec.DatabaseOwnerSid) ? "(not found)" : sec.DatabaseOwnerSid)}");
+
+            // Optional workgroup inspection
+            if (!string.IsNullOrEmpty(mdwPath))
+            {
+                Console.WriteLine($"\n[+] Parsing Workgroup File: {Path.GetFileName(mdwPath)}");
+                var wg = Engine.SecurityReader.InspectWorkgroup(mdwPath);
+
+                if (!string.IsNullOrEmpty(wg.ErrorMessage))
+                {
+                    Console.WriteLine($"[ERROR] {wg.ErrorMessage}");
+                }
+                else
+                {
+                    Console.WriteLine($"  Valid Workgroup    : {wg.IsValidWorkgroupFile}");
+                    Console.WriteLine($"  Workgroup ID (WID) : {(string.IsNullOrEmpty(wg.WorkgroupId) ? "(not found)" : wg.WorkgroupId)}");
+                    Console.WriteLine($"  Users Found        : {wg.Users.Count}");
+                    Console.WriteLine($"  Groups Found       : {wg.Groups.Count}");
+
+                    if (wg.Users.Count > 0)
+                    {
+                        Console.WriteLine("\n--- Workgroup Users ---");
+                        foreach (var user in wg.Users)
+                        {
+                            string sid = string.IsNullOrEmpty(user.Sid) ? "(no SID)" : user.Sid;
+                            Console.WriteLine($"  [{user.AccountType}] {user.AccountName,-20} SID: {sid}");
+                        }
+                    }
+
+                    if (wg.Groups.Count > 0)
+                    {
+                        Console.WriteLine("\n--- Workgroup Groups ---");
+                        foreach (var grp in wg.Groups)
+                        {
+                            Console.WriteLine($"  [Group] {grp.GroupName}");
+                        }
+                    }
+                }
             }
         }
 

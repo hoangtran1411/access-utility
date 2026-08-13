@@ -96,4 +96,67 @@ namespace AccessUtility.Models
         public List<string> TableSummaries { get; set; } = new();
         public string StatusSummary { get; set; } = string.Empty;
     }
+
+    // ── Feature 01: Database Password & Security Inspector ────────────────────
+
+    public enum WorkgroupAccountType { User, Group, Unknown }
+
+    /// <summary>
+    /// Result of inspecting Access 97 database security settings from Page 0.
+    /// </summary>
+    public class SecurityInspectionResult
+    {
+        public string DatabasePath { get; set; } = string.Empty;
+        public bool IsValidJetDatabase { get; set; }
+        public string JetVersion { get; set; } = string.Empty;
+
+        /// <summary>Plaintext password decrypted from Page 0 offset 0x42 using Jet3 XOR mask. Null if no password set.</summary>
+        public string? DatabasePassword { get; set; }
+        public bool IsPasswordProtected { get; set; }
+
+        /// <summary>Hex representation of the 8-byte owner SID at Page 0 offset 0x5A.</summary>
+        public string DatabaseOwnerSid { get; set; } = string.Empty;
+
+        /// <summary>True if User-Level Security (ULS) flag is enabled (Page 0 offset 0x5C bit 0x08).</summary>
+        public bool HasUserLevelSecurity { get; set; }
+
+        /// <summary>True if XOR/RC4 encryption-at-rest is enabled (Page 0 offset 0x12 bit 0x04).</summary>
+        public bool IsEncryptedAtRest { get; set; }
+
+        public string InspectionStatus { get; set; } = string.Empty;
+        public string ErrorMessage { get; set; } = string.Empty;
+    }
+
+    /// <summary>
+    /// A user account parsed from a System.mdw workgroup file.
+    /// </summary>
+    public class WorkgroupUser
+    {
+        public string AccountName { get; set; } = string.Empty;
+        public string Sid { get; set; } = string.Empty;
+        public WorkgroupAccountType AccountType { get; set; } = WorkgroupAccountType.User;
+    }
+
+    /// <summary>
+    /// A security group parsed from a System.mdw workgroup file.
+    /// </summary>
+    public class WorkgroupGroup
+    {
+        public string GroupName { get; set; } = string.Empty;
+        public List<string> MemberNames { get; set; } = new();
+    }
+
+    /// <summary>
+    /// Result of parsing a System.mdw Access workgroup file.
+    /// </summary>
+    public class WorkgroupInspectionResult
+    {
+        public string WorkgroupPath { get; set; } = string.Empty;
+        public bool IsValidWorkgroupFile { get; set; }
+        public string WorkgroupId { get; set; } = string.Empty;
+        public List<WorkgroupUser> Users { get; set; } = new();
+        public List<WorkgroupGroup> Groups { get; set; } = new();
+        public string InspectionStatus { get; set; } = string.Empty;
+        public string ErrorMessage { get; set; } = string.Empty;
+    }
 }

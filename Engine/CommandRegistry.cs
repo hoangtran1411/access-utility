@@ -70,6 +70,20 @@ namespace AccessUtility.Engine
                 },
                 new CommandDescriptor
                 {
+                    Name = "password",
+                    Aliases = new[] { "pw", "security" },
+                    Summary = "Decrypt database password & inspect security settings",
+                    Description = "Reads Jet 3.5 Page 0 at offset 0x42 and XOR-decrypts the 14-byte password block using the static Jet3 mask. Also reports User-Level Security (ULS) flags, encryption-at-rest, and owner SID. Optionally parses System.mdw workgroup files.",
+                    Usage = "AccessUtility.exe password <file.mdb> [--workgroup System.mdw]",
+                    Flags = new List<string> { "--workgroup <path to System.mdw>" },
+                    Examples = new List<string>
+                    {
+                        "AccessUtility.exe password C:\\DB\\Protected97.mdb",
+                        "AccessUtility.exe password C:\\DB\\Protected97.mdb --workgroup C:\\Windows\\System32\\System.mdw"
+                    }
+                },
+                new CommandDescriptor
+                {
                     Name = "ax",
                     Aliases = new[] { "ai", "ask" },
                     Summary = "AX (AI Experiment) Natural Language Command Assistant",

@@ -18,14 +18,14 @@
 *.dll
 *.pdb
 
-# Test & Sample Databases
-sample97.*
-*.compacted.mdb
-*.repaired.mdb
+# Test & Sample Databases & Export Files
+*.mdb
+*.ldb
 *.sqlite
+*.db
 *.sql
 *.csv
-*.ldb
+sample97.*
 
 # OS Generated Files
 Thumbs.db
