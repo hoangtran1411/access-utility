@@ -20,6 +20,8 @@ namespace AccessUtility.Web
     [JsonSerializable(typeof(List<Dictionary<string, object?>>))]
     [JsonSerializable(typeof(Dictionary<string, object?>))]
     [JsonSerializable(typeof(Dictionary<string, string>))]
+    [JsonSerializable(typeof(LogEntry), TypeInfoPropertyName = "LogEntry")]
+    [JsonSerializable(typeof(List<LogEntry>), TypeInfoPropertyName = "ListLogEntry")]
     public partial class AppJsonContext : JsonSerializerContext
     {
     }

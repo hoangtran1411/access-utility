@@ -85,5 +85,46 @@ namespace AccessUtility.Tests
                 Console.SetOut(originalOut);
             }
         }
+
+        [Fact]
+        public void GetLogs_ValidDatabase_ReturnsLogEntries()
+        {
+            // Arrange
+            string dbPath = Path.Combine(Path.GetTempPath(), $"test_logs_{Guid.NewGuid()}.sqlite");
+            
+            var sink = new SqliteLogSink(dbPath);
+            
+            var logEvent = new LogEvent(
+                DateTimeOffset.Now,
+                LogEventLevel.Warning,
+                null,
+                new MessageTemplateParser().Parse("Web Dashboard started on port {Port}"),
+                new[] { new LogEventProperty("Port", new ScalarValue(5000)) }
+            );
+            sink.Emit(logEvent);
+
+            try
+            {
+                // Act
+                var logs = LogViewer.GetLogs(dbPath, tailCount: 10);
+                
+                // Assert
+                Assert.NotNull(logs);
+                Assert.Single(logs);
+                
+                var entry = logs[0];
+                Assert.Equal("Warning", entry.Level);
+                Assert.Contains("Web Dashboard started on port 5000", entry.Message);
+                Assert.Null(entry.Exception);
+            }
+            finally
+            {
+                Microsoft.Data.Sqlite.SqliteConnection.ClearAllPools();
+                if (File.Exists(dbPath))
+                {
+                    File.Delete(dbPath);
+                }
+            }
+        }
     }
 }

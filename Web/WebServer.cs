@@ -77,6 +77,13 @@ namespace AccessUtility.Web
                 return Results.Json(new ExportResponse { Success = true, OutputPath = outPath, Format = fmt }, AppJsonContext.Default.ExportResponse);
             });
 
+            // API: Logs
+            app.MapGet("/api/logs", (int limit = 50, string? level = null) =>
+            {
+                var logs = LogViewer.GetLogs("app_logs.sqlite", limit, level) ?? new System.Collections.Generic.List<LogEntry>();
+                return Results.Json(logs, AppJsonContext.Default.ListLogEntry);
+            });
+
             Console.WriteLine($"==================================================");
             Console.WriteLine($" Access 97 Utility Web Dashboard Running!");
             Console.WriteLine($" URL: http://localhost:{port}");

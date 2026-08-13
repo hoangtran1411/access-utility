@@ -260,6 +260,28 @@ namespace AccessUtility.Web
         </div>
     </div>
 
+    <!-- System Logs Viewer -->
+    <div class="card">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <h2>Daemon System Logs</h2>
+            <button onclick="fetchSystemLogs()" class="secondary">Refresh Logs</button>
+        </div>
+        <div style="overflow-x: auto;">
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width: 20%">Timestamp</th>
+                        <th style="width: 10%">Level</th>
+                        <th>Message</th>
+                    </tr>
+                </thead>
+                <tbody id="systemLogsBody">
+                    <tr><td colspan="3" style="text-align: center; color: var(--text-secondary);">Click Refresh to load system logs...</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
     <script>
         async function diagnoseDb() {
             const path = document.getElementById('filePath').value;
@@ -337,6 +359,44 @@ namespace AccessUtility.Web
         function log(msg) {
             const box = document.getElementById('logContent');
             box.innerText = `[${new Date().toLocaleTimeString()}] ${msg}\n` + box.innerText;
+        }
+
+        async function fetchSystemLogs() {
+            try {
+                const res = await fetch('/api/logs?limit=30');
+                const logs = await res.json();
+                
+                const tbody = document.getElementById('systemLogsBody');
+                tbody.innerHTML = '';
+                
+                if (!logs || logs.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="3" style="text-align: center; color: var(--text-secondary);">No logs found.</td></tr>';
+                    return;
+                }
+                
+                logs.forEach(entry => {
+                    const tr = document.createElement('tr');
+                    
+                    let levelBadge = `<span class="badge badge-success">INFO</span>`;
+                    if (entry.level.toLowerCase() === 'error' || entry.level.toLowerCase() === 'fatal') {
+                        levelBadge = `<span class="badge badge-danger">ERROR</span>`;
+                    } else if (entry.level.toLowerCase() === 'warning') {
+                        levelBadge = `<span class="badge badge-warning">WARN</span>`;
+                    }
+                    
+                    tr.innerHTML = `
+                        <td style="color: var(--text-secondary); font-size: 0.85rem;">${new Date(entry.timestamp).toLocaleString()}</td>
+                        <td>${levelBadge}</td>
+                        <td style="font-family: monospace; font-size: 0.85rem;">
+                            ${entry.message}
+                            ${entry.exception ? '<br><span style="color: var(--danger);">' + entry.exception + '</span>' : ''}
+                        </td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            } catch (e) {
+                console.error("Failed to load logs", e);
+            }
         }
     </script>
 </body>
