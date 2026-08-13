@@ -30,15 +30,16 @@ It includes full **Lock File (`.ldb`) Inspection** to identify connected compute
 
 ---
 
-## 📚 Documentation & Tutorial Series
+## 📚 Documentation & Feature Roadmap
 
-Check out our step-by-step documentation series in the [`docs/`](docs/) folder:
-
-1. [**01 - Introduction & Architecture**](docs/01-introduction-and-architecture.md): Overview of Jet 3.5 (Access 97) database engine layout & Native AOT design.
-2. [**02 - Lock File (.ldb) Inspector Guide**](docs/02-lock-file-inspector-guide.md): Understanding `.ldb` 64-byte blocks, active locks, and stale lock removal.
-3. [**03 - Compact & Repair Engine Guide**](docs/03-compact-and-repair-engine.md): In-depth breakdown of defragmentation and deep sector page recovery.
-4. [**04 - CLI & Web UI Guide**](docs/04-cli-and-web-ui-guide.md): Using terminal commands and launching the embedded Web Dashboard UI.
-5. [**05 - Building, Testing & CI/CD Guide**](docs/05-building-testing-and-cicd.md): Compiling Native AOT binaries, running xUnit tests, and GitHub Actions workflow setup.
+- 📖 [**Step-by-Step Learning Series (`docs/`)**](docs/01-introduction-and-architecture.md): 5-part tutorial covering Jet 3.5 2KB page engine, `.ldb` lock parsing, compacting, repair algorithms, and CI/CD.
+- 🎯 [**Feature Specifications & Progress Tracker (`context/`)**](context/progress.md):
+  - [`01-feature-password-decryptor.md`](context/01-feature-password-decryptor.md): Database password extraction & security inspector.
+  - [`02-feature-schema-diff-migration.md`](context/02-feature-schema-diff-migration.md): Schema version comparison & SQL migration generator.
+  - [`03-feature-ole-object-extractor.md`](context/03-feature-ole-object-extractor.md): Embedded image & document OLE blob extractor.
+  - [`04-feature-query-sql-extractor.md`](context/04-feature-query-sql-extractor.md): Query SQL reconstructor from `MSysQueries`.
+  - [`05-feature-maintenance-daemon.md`](context/05-feature-maintenance-daemon.md): Scheduled health monitoring, orphan lock cleanup & zip backups.
+  - [`progress.md`](context/progress.md): Live task checklist and implementation tracker.
 
 ---
 
