@@ -65,7 +65,7 @@ jobs:
         uses: actions/upload-artifact@v7
         with:
           name: AccessUtility-${{ matrix.rid }}
-          path: ./publish-${{ matrix.rid }}/${{ matrix.binary_name }}
+          path: ./publish-${{ matrix.rid }}/
 
   create-release:
     name: Create GitHub Release
