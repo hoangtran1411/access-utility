@@ -19,7 +19,11 @@ Over time, modifying or deleting records in Access 97 creates **slack space** an
 4. **Result Calculation**: Returns original size, compacted size, and exact space saved (bytes and %).
 
 ```bash
+# Command aliases: compact, cmp, defrag
 AccessUtility.exe compact C:\Databases\Bloated97.mdb --output Clean97.mdb
+
+# Defrag with force unlock if orphan lock exists:
+AccessUtility.exe cmp C:\Databases\Bloated97.mdb --force-unlock
 ```
 
 ---
@@ -35,10 +39,15 @@ When an Access 97 database experiences sudden power loss, header corruption, or 
 4. **Reconstruction**: Invokes the Compactor engine to write out a fully reconstructed, healthy Access 97 `.mdb` file.
 
 ```bash
+# Command aliases: repair, rep, recover
 AccessUtility.exe repair C:\Databases\Corrupted97.mdb --output Repaired97.mdb --force-unlock
+
+# Default output target is Corrupted97.repaired.mdb
+AccessUtility.exe rep C:\Databases\Corrupted97.mdb
 ```
 
 ---
 
-## Next Step
-Continue to [04 - CLI & Web UI Guide](04-cli-and-web-ui-guide.md) to explore the interactive terminal menu and embedded Web Dashboard.
+## ⏩ Navigation
+- ⬅️ **Previous:** [02 - Lock File (.ldb) Inspector Guide](02-lock-file-inspector-guide.md)
+- ➡️ **Next:** [04 - CLI & Web UI Guide](04-cli-and-web-ui-guide.md)

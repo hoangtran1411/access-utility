@@ -45,9 +45,11 @@ for (int i = 0; i < count; i++)
 
 ## 🖥 CLI Lock Command
 
-Inspect lock status and connected user names:
+Inspect lock status and connected user names (Aliases: `lockstat`, `ls`, `locks`):
 ```bash
 AccessUtility.exe lockstat C:\Databases\MainData97.mdb
+# Or using aliases:
+AccessUtility.exe ls C:\Databases\MainData97.mdb
 ```
 
 Sample output:
@@ -61,9 +63,13 @@ Sample output:
 --- Connected Users & Computer Names ---
   #1 | Computer: WORKSTATION1 | User: Admin
   #2 | Computer: LAPTOP-DEV | User: Hoang
+
+[!] Orphan .ldb lock file detected from previous crash.
+    Attempt automatic lock cleanup? (Y/N):
 ```
 
 ---
 
-## Next Step
-Continue to [03 - Compact & Repair Engine](03-compact-and-repair-engine.md) to understand how database defragmentation and page recovery work.
+## ⏩ Navigation
+- ⬅️ **Previous:** [01 - Introduction & Architecture](01-introduction-and-architecture.md)
+- ➡️ **Next:** [03 - Compact & Repair Engine](03-compact-and-repair-engine.md)

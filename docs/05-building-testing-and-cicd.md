@@ -50,3 +50,9 @@ The repository includes an automated GitHub Actions workflow:
 1. **Build & Test**: Triggered on `push` or `pull_request` to `main`/`master`. Builds `.slnx` and executes all unit tests on .NET 10.
 2. **Native AOT Cross-Platform Matrix**: Compiles Native AOT binaries for Windows (`win-x64`), Linux (`linux-x64`), and macOS (`osx-arm64`).
 3. **Automated GitHub Release**: Triggered when pushing a git tag like `v1.0.0`; automatically zips and attaches cross-platform executables to the release.
+
+---
+
+## ⏩ Navigation
+- ⬅️ **Previous:** [04 - CLI & Web UI Guide](04-cli-and-web-ui-guide.md)
+- ➡️ **Next:** [06 - Complete CLI Usage Commands](06-cli-usage.md)

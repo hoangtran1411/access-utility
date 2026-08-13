@@ -22,18 +22,27 @@ Here is what the tool can do:
 ## 🧩 How is the Code Organized?
 If you want to read the code, here is where to look:
 
-- **`Models/`**: This folder contains the definitions of things. Think of them as blueprints (e.g., `AccessDatabase`, `AccessTable`, `AccessColumn`).
-- **`Engine/`**: This is the heart of the project. This is where the actual "work" happens:
-  - `Jet3BinaryReader.cs`: The magic file that reads the raw `.mdb` bytes.
-  - `SchemaComparer.cs`: Looks at two databases and finds what changed.
-  - `MaintenanceDaemon.cs`: A background worker that automatically cleans and backs up databases.
-- **`AccessUtility.Tests/`**: This folder contains automated checks to make sure we don't break the code when we add new features.
+- **`Models/`**: Contains core data models and blueprints (e.g., `AccessDatabase`, `AccessTable`, `AccessColumn`, `LogEntry`).
+- **`Engine/`**: The core execution engine:
+  - `Jet3BinaryReader.cs`: Parses Jet 3.5 binary structures directly in C#.
+  - `Jet3Compactor.cs` & `Jet3Repairer.cs`: Compacts and repairs database files.
+  - `LdbLockInspector.cs`: Inspects `.ldb` lock files and cleans up stale orphan locks.
+  - `SecurityReader.cs`: Decrypts database passwords and parses `System.mdw` workgroup files.
+  - `SchemaComparer.cs`: Compares two database schemas.
+  - `OleExtractor.cs` & `QueryExtractor.cs`: Extracts embedded media (OLE) and saved SQL queries.
+  - `MaintenanceDaemon.cs`: Background worker for automated cleanup and backups.
+  - `AxAssistant.cs`: Natural language AI assistant for automated command execution.
+  - `TuiEngine.cs` & `LogViewer.cs`: Terminal UI engine and native SQLite log viewer.
+- **`Exporters/`**: Export engines for CSV, SQLite, SQL Scripts, and Schema Migration DDL (`CsvExporter.cs`, `SqliteExporter.cs`, `SqlScriptExporter.cs`, `MigrationScriptExporter.cs`).
+- **`Web/`**: Embedded ASP.NET Core Native AOT web server and interactive web dashboard (`WebServer.cs`, `DashboardHtml.cs`).
+- **`AccessUtility.Tests/`**: Automated xUnit test suite for validating lock inspector, compacting, repair, and exporters.
+- **`Program.cs`**: Entry point handling CLI argument parsing, interactive mode, and command dispatching.
 
 ## 🛠️ How Do I Run It?
-This tool is a **Command-Line Interface (CLI)**. There are no buttons to click. You type commands into your terminal.
+This tool is a **Command-Line Interface (CLI)**. There are no complex setups required. You can run interactive mode by executing without arguments, or type direct commands into your terminal.
 
 1. Open a terminal (like PowerShell or Command Prompt).
-2. Type a command to run the tool. For example, to find out if a database has a password, you type:
+2. Type a command to run the tool. For example, to find out if a database has a password, type:
    ```bash
    AccessUtility.exe password C:\MyOldData.mdb
    ```
@@ -42,7 +51,10 @@ This tool is a **Command-Line Interface (CLI)**. There are no buttons to click. 
 ## 🎓 Next Steps for Beginners
 Don't worry if it seems overwhelming! Here is what you should do next to learn:
 1. **Play with it**: Build the code in Visual Studio or Rider, and try running the `AccessUtility.exe diagnose` command on a test `.mdb` file.
-2. **Read the Next Guide**: Proceed to [01 - Introduction & Architecture](01-introduction-and-architecture.md) for a slightly deeper dive into how the binary data is read.
-3. **Ask Questions**: We use an AI Assistant (AX) in the CLI! You can literally ask the tool how to use it by running: `AccessUtility.exe ax "How do I export data?"`
+2. **Read the Next Guide**: Proceed to [01 - Introduction & Architecture](01-introduction-and-architecture.md) for a deeper dive into how binary data is read.
+3. **Ask Questions**: We use an AI Assistant (AX) in the CLI! You can ask the tool how to use it by running: `AccessUtility.exe ax "How do I export data?"`
 
-We are thrilled to have you here! Happy coding! 🎉
+---
+
+## ⏩ Next Step
+Continue to [01 - Introduction & Architecture](01-introduction-and-architecture.md) to learn how Access 97 binary files are structured and how the engine processes them.

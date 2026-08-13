@@ -4,36 +4,48 @@
 
 ---
 
-## 💻 Command-Line Interface (CLI)
+## 💻 Command-Line Interface (CLI) & Interactive TUI
 
-Running `AccessUtility.exe` without parameters launches an interactive terminal menu:
+Running `AccessUtility.exe` without parameters (or with `tui`) launches the interactive terminal menu (`TuiEngine.cs`).
+
+Running `AccessUtility.exe --help` displays all registered Cobra commands:
 
 ```text
 ========================================================================
- MS Access 97 (.mdb) Utility - Native AOT Engine
- Focus: Compact, Repair & Lock File (.ldb) Inspector
+ AccessUtility (.NET 10 Native AOT) - Cobra CLI System
+ Focus: Access 97 Compact, Repair, Lock Inspector & AX Assistant
 ========================================================================
 
 Usage:
-  AccessUtility.exe <command> <file.mdb> [options]
+  AccessUtility.exe [command] [flags]
 
-Commands:
-  lockstat <file.mdb>                            Inspect .ldb lock file & active user connections
-  diagnose <file.mdb>                            Run health & page fragmentation diagnostics
-  compact  <file.mdb> [--output target] [--force-unlock]  Defragment & minimize .mdb file size
-  repair   <file.mdb> [--output target] [--force-unlock]  Deep sector repair & data recovery
-  export   <file.mdb> [--format sqlite|sql|csv]  Export database to SQLite, SQL, or CSV
-  web      [--port 5000]                         Launch Web Dashboard UI in browser
+Available Commands:
+  lockstat     Inspect .ldb lock file & list connected users (aliases: ls, locks)
+  diagnose     Run database health & page fragmentation diagnostics (aliases: diag, health)
+  compact      Defragment & minimize .mdb file size (aliases: cmp, defrag)
+  repair       Deep sector repair & data recovery (aliases: rep, recover)
+  export       Export database to SQLite, SQL scripts, or CSV (aliases: exp, convert)
+  password     Decrypt database password & inspect security settings (aliases: pw, security)
+  diff         Compare two databases & generate SQL migration script (aliases: compare)
+  extract-ole  Extract OLE embedded objects (BMP, PDF, Word) (aliases: extract)
+  extract-queries Extract saved queries to SQL files (aliases: queries)
+  daemon       Run automated background maintenance (aliases: maintain)
+  logs         View and filter the local SQLite application logs (aliases: log, tail)
+  update       Update AccessUtility to the latest release
+  ax           AX (AI Experiment) Natural Language Command Assistant (aliases: ai, ask)
+  web          Launch Web Dashboard UI in browser (aliases: ui, dashboard)
 ```
 
 ---
 
 ## 🌐 Embedded Web Dashboard (`Web/WebServer.cs`)
 
-Launch the web dashboard on port 5000 (or custom port):
+Launch the web dashboard on port 5000 (or custom port via `--port`):
 
 ```bash
 AccessUtility.exe web --port 5000
+# Or using aliases:
+AccessUtility.exe dashboard --port 5000
 ```
 
 Open `http://localhost:5000` in your web browser:
@@ -46,5 +58,6 @@ Open `http://localhost:5000` in your web browser:
 
 ---
 
-## Next Step
-Continue to [05 - Building, Testing & CI/CD](05-building-testing-and-cicd.md) to learn how to build, test, and automate releases using GitHub Actions.
+## ⏩ Navigation
+- ⬅️ **Previous:** [03 - Compact & Repair Engine Guide](03-compact-and-repair-engine.md)
+- ➡️ **Next:** [05 - Building, Testing & CI/CD](05-building-testing-and-cicd.md)

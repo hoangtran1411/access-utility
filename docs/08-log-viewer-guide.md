@@ -38,3 +38,9 @@ The integrated log viewer will format the output with ANSI color codes to make r
 * **Errors & Fatal Issues**: 🔴 Red
 * **Warnings**: 🟡 Yellow
 * **Information**: 🟢 Green
+
+---
+
+## ⏩ Navigation
+- ⬅️ **Previous:** [07 - Serilog Configuration & Telemetry](07-serilog-configuration.md)
+- 🔄 **Return to Start:** [00 - Beginner's Guide to AccessUtility](00-beginner-guide.md)
