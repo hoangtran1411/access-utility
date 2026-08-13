@@ -39,33 +39,30 @@
 - [x] Add `AccessUtility.exe diff <dev.mdb> <prod.mdb>` CLI command
 - [x] Add xUnit unit tests in `AccessUtility.Tests/SchemaComparerTests.cs`
 
-### 🖼️ [Feature 03: OLE Object & Embedded File Extractor](03-feature-ole-object-extractor.md)
-- [ ] Implement 78-byte Access OLE container header stripper (`Engine/OleExtractor.cs`)
-- [ ] Add magic byte signatures for BMP, JPEG, PNG, PDF, and MS Office documents
-- [ ] Add `AccessUtility.exe extract-ole <file.mdb> --output ./files` CLI command
-- [ ] Add xUnit unit tests in `AccessUtility.Tests/OleExtractorTests.cs`
+### 🖼️ [Feature 03: OLE Object & Embedded File Extractor](03-feature-ole-object-extractor.md) ✅ COMPLETED
+- [x] Implement 78-byte Access OLE container header stripper (`Engine/OleExtractor.cs`)
+- [x] Add logic to scan `Long Binary` fields for BMP/JPEG/PNG/PDF/DOC signatures
+- [x] Add `AccessUtility.exe extract-ole <mdb_path>` CLI command
+- [x] Add xUnit unit tests in `AccessUtility.Tests/OleExtractorTests.cs`
 
 ### 📝 [Feature 04: Access Query (MSysQueries) SQL Extractor](04-feature-query-sql-extractor.md)
-- [ ] Parse `MSysQueries` and `MSysObjects` catalog tables (`Engine/QueryExtractor.cs`)
-- [ ] Reconstruct SQL SELECT, JOIN, WHERE, GROUP BY, and TRANSFORM statements
-- [ ] Add `AccessUtility.exe extract-queries <file.mdb> --output ./queries` CLI command
-- [ ] Add xUnit unit tests in `AccessUtility.Tests/QueryExtractorTests.cs`
+- [ ] Reverse engineer Jet query encoding (MSysQueries)
+- [ ] Map Jet opcodes (e.g., `0x00`, `0x06`, `0x0A`) to SQL clauses (SELECT, FROM, WHERE, ORDER BY)
+- [ ] Add `AccessUtility.exe extract-queries <mdb_path>` CLI command
+- [ ] Add xUnit tests for Query extraction (`AccessUtility.Tests/QueryExtractorTests.cs`)
 
 ### ⏰ [Feature 05: Maintenance Daemon & Backup Scheduler](05-feature-maintenance-daemon.md)
-- [ ] Implement background maintenance timer loop (`Engine/MaintenanceDaemon.cs`)
-- [ ] Add auto-orphan-lock cleaner and auto-compact threshold runner
-- [ ] Add timestamped ZIP backup generator (`Exporters/ZipBackupExporter.cs`)
-- [ ] Add `AccessUtility.exe daemon --path <file.mdb> --interval 24h` CLI command
+- [ ] Build background polling loop `Engine/DaemonRunner.cs`
+- [ ] Implement conditional compaction based on `.ldb` presence (Wait until 3 AM and no users)
+- [ ] Add `AccessUtility.exe daemon run` CLI command
+- [ ] Setup scheduled Windows Task / systemd integration docs
 
----
-
-## 📈 Implementation Progress Checklist
-
+## 📈 Status Overview
 ```text
 [X] Core Foundation (10/10 Tasks Completed)
 [X] Feature 01: Database Password Inspector (5/5 Tasks) ✅
 [X] Feature 02: Schema Diff Engine (4/4 Tasks) ✅
-[ ] Feature 03: OLE File Extractor (0/4 Tasks)
+[X] Feature 03: OLE File Extractor (4/4 Tasks) ✅
 [ ] Feature 04: Query SQL Extractor (0/4 Tasks)
 [ ] Feature 05: Maintenance Daemon (0/4 Tasks)
 ```

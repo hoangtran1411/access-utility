@@ -3,6 +3,7 @@ using System.IO;
 using AccessUtility.Engine;
 using AccessUtility.Exporters;
 using AccessUtility.Web;
+using Serilog;
 
 namespace AccessUtility
 {
@@ -10,13 +11,17 @@ namespace AccessUtility
     {
         private static void Main(string[] args)
         {
-            Console.Title = "Access 97 Utility - AX AI Engine & Cobra CLI (.NET 10 Native AOT)";
-
-            if (args.Length == 0)
+            AppLogger.Initialize("access_utility_logs.sqlite");
+            
+            try
             {
-                TuiEngine.RunInteractiveTui();
-                return;
-            }
+                Console.Title = "Access 97 Utility - AX AI Engine & Cobra CLI (.NET 10 Native AOT)";
+
+                if (args.Length == 0)
+                {
+                    TuiEngine.RunInteractiveTui();
+                    return;
+                }
 
             string command = args[0].ToLower();
 
@@ -71,6 +76,12 @@ namespace AccessUtility
                     RunDiffCommand(args[1], args[2], diffOut, diffDialect);
                     break;
 
+                case "extract-ole" or "extract":
+                    if (args.Length < 2) { CommandRegistry.PrintCobraHelp(); return; }
+                    string oleOut = GetArgValue(args, "--output") ?? "./extracted_ole";
+                    RunExtractOleCommand(args[1], oleOut);
+                    break;
+
                 case "ax" or "ai" or "ask":
                     string query = args.Length >= 2 ? string.Join(" ", args[1..]) : "";
                     if (string.IsNullOrWhiteSpace(query))
@@ -110,10 +121,16 @@ namespace AccessUtility
                     CommandRegistry.PrintCobraHelp();
                     break;
             }
+            }
+            finally
+            {
+                AppLogger.CloseAndFlush();
+            }
         }
 
         private static void RunLockStatCommand(string mdbPath, bool promptCleanup = true)
         {
+            Log.Information("Executing LockStatCommand on {Path}", mdbPath);
             Console.WriteLine($"\n[+] Inspecting Lock File (.ldb) for: {mdbPath}");
             var lockInfo = LdbLockInspector.Inspect(mdbPath);
 
@@ -146,6 +163,7 @@ namespace AccessUtility
 
         private static void RunDiagnoseCommand(string mdbPath)
         {
+            Log.Information("Executing DiagnoseCommand on {Path}", mdbPath);
             Console.WriteLine($"\n[+] Running Database Health Diagnostics for: {mdbPath}");
             var db = Jet3BinaryReader.ReadDatabase(mdbPath, out var diag);
 
@@ -170,6 +188,7 @@ namespace AccessUtility
 
         private static void RunCompactCommand(string srcPath, string targetPath, bool force)
         {
+            Log.Information("Executing CompactCommand on {SourcePath} to {TargetPath}", srcPath, targetPath);
             Console.WriteLine($"\n[+] Compacting Access 97 Database: {srcPath}");
             Console.WriteLine($"    Target Output: {targetPath}");
 
@@ -191,6 +210,7 @@ namespace AccessUtility
 
         private static void RunRepairCommand(string srcPath, string targetPath, bool force)
         {
+            Log.Information("Executing RepairCommand on {SourcePath} to {TargetPath}", srcPath, targetPath);
             Console.WriteLine($"\n[+] Repairing Access 97 Database: {srcPath}");
             Console.WriteLine($"    Target Output: {targetPath}");
 
@@ -272,6 +292,7 @@ namespace AccessUtility
 
         private static void RunDiffCommand(string sourceMdb, string targetMdb, string outputPath, string dialect)
         {
+            Log.Information("Executing DiffCommand on {SourcePath} and {TargetPath}, dialect {Dialect}", sourceMdb, targetMdb, dialect);
             Console.WriteLine($"\n[+] Comparing Schemas: {Path.GetFileName(sourceMdb)} vs {Path.GetFileName(targetMdb)}");
 
             var sourceDb = Jet3BinaryReader.ReadDatabase(sourceMdb, out var srcReport);
@@ -297,6 +318,34 @@ namespace AccessUtility
                 Console.WriteLine($"\n[+] Generating {dialect.ToUpper()} Migration Script: {outputPath}");
                 MigrationScriptExporter.GenerateMigrationScript(diff, outputPath, dialect);
                 Console.WriteLine($"[SUCCESS] Script generated successfully.");
+            }
+        }
+
+        private static void RunExtractOleCommand(string mdbPath, string outputDir)
+        {
+            Log.Information("Executing ExtractOleCommand on {Path} to {OutputDir}", mdbPath, outputDir);
+            Console.WriteLine($"\n[+] Extracting OLE Objects from: {mdbPath}");
+            Console.WriteLine($"    Output Directory: {outputDir}");
+
+            var db = Jet3BinaryReader.ReadDatabase(mdbPath, out var diag);
+            if (diag.CorruptPagesCount > 0)
+            {
+                Console.WriteLine($"[WARNING] Database has {diag.CorruptPagesCount} corrupted pages. Extraction may be incomplete.");
+            }
+
+            var report = OleExtractor.ExtractDatabase(db, outputDir);
+
+            if (report.ExtractedFiles.Count == 0)
+            {
+                Console.WriteLine("\n[INFO] No embedded OLE objects found (or none matched known signatures).");
+            }
+            else
+            {
+                Console.WriteLine($"\n[SUCCESS] Extracted {report.ExtractedFiles.Count} files.");
+                foreach (var file in report.ExtractedFiles)
+                {
+                    Console.WriteLine($"  [{file.FileType.ToUpper()}] {file.TableName}.{file.ColumnName} -> {Path.GetFileName(file.FilePath)} ({file.SizeBytes} bytes)");
+                }
             }
         }
 

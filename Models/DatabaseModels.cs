@@ -215,4 +215,22 @@ namespace AccessUtility.Models
         public List<TableDiff> RemovedTables { get; set; } = new();
         public List<TableDiff> ModifiedTables { get; set; } = new();
     }
+
+    // ── Feature 03: OLE Object & Embedded File Extractor ──────────────────────
+
+    public class ExtractedOleFile
+    {
+        public string TableName { get; set; } = string.Empty;
+        public string ColumnName { get; set; } = string.Empty;
+        public int RowIndex { get; set; }
+        public string FilePath { get; set; } = string.Empty;
+        public string FileType { get; set; } = string.Empty; // e.g. bmp, pdf, doc
+        public int SizeBytes { get; set; }
+    }
+
+    public class OleExtractionReport
+    {
+        public string OutputDirectory { get; set; } = string.Empty;
+        public List<ExtractedOleFile> ExtractedFiles { get; set; } = new();
+    }
 }

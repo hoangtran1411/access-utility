@@ -98,6 +98,20 @@ namespace AccessUtility.Engine
                 },
                 new CommandDescriptor
                 {
+                    Name = "extract-ole",
+                    Aliases = new[] { "extract" },
+                    Summary = "Extract OLE embedded objects (BMP, PDF, Word)",
+                    Description = "Scans Long Binary (OLE) fields, strips Access OLE Container Headers (78-bytes), and dumps embedded files to disk.",
+                    Usage = "AccessUtility.exe extract-ole <file.mdb> [--output ./extracted]",
+                    Flags = new List<string> { "--output <dir>" },
+                    Examples = new List<string>
+                    {
+                        "AccessUtility.exe extract-ole Products97.mdb",
+                        "AccessUtility.exe extract-ole Products97.mdb --output C:\\ExportedFiles"
+                    }
+                },
+                new CommandDescriptor
+                {
                     Name = "ax",
                     Aliases = new[] { "ai", "ask" },
                     Summary = "AX (AI Experiment) Natural Language Command Assistant",

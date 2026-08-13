@@ -335,8 +335,17 @@ namespace AccessUtility.Engine
 
                         if (varDataStart + varDataLen <= pageEndPos && varDataLen >= 0)
                         {
-                            string textVal = Encoding.ASCII.GetString(fileBytes, varDataStart, varDataLen).Replace("\0", "").Trim();
-                            row[col.Name] = textVal;
+                            if (col.DataType == JetDataType.Binary)
+                            {
+                                byte[] binData = new byte[varDataLen];
+                                Array.Copy(fileBytes, varDataStart, binData, 0, varDataLen);
+                                row[col.Name] = binData;
+                            }
+                            else
+                            {
+                                string textVal = Encoding.ASCII.GetString(fileBytes, varDataStart, varDataLen).Replace("\0", "").Trim();
+                                row[col.Name] = textVal;
+                            }
                         }
                         else
                         {
