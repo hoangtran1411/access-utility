@@ -91,15 +91,17 @@ namespace AccessUtility.Web
                 try
                 {
                     await AutoUpdater.CheckAndUpdateAsync();
-                    return Results.Json(new UpdateResponse 
+                    var resp = new UpdateResponse 
                     { 
                         Success = true, 
                         Message = "Update process executed. Check server console for status details." 
-                    }, AppJsonContext.Default.UpdateResponse);
+                    };
+                    return Results.Content(System.Text.Json.JsonSerializer.Serialize(resp, AppJsonContext.Default.GetTypeInfo(typeof(UpdateResponse))!), "application/json");
                 }
                 catch (Exception ex)
                 {
-                    return Results.Json(new UpdateResponse { Success = false, Message = $"Update failed: {ex.Message}" }, AppJsonContext.Default.UpdateResponse);
+                    var errResp = new UpdateResponse { Success = false, Message = $"Update failed: {ex.Message}" };
+                    return Results.Content(System.Text.Json.JsonSerializer.Serialize(errResp, AppJsonContext.Default.GetTypeInfo(typeof(UpdateResponse))!), "application/json");
                 }
             });
 
