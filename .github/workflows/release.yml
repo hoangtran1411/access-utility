@@ -1,0 +1,88 @@
+name: Manual Release Tool
+
+on:
+  workflow_dispatch:
+    inputs:
+      version_tag:
+        description: 'Version Tag (e.g. v1.0.0)'
+        required: true
+        default: 'v1.0.0'
+      is_prerelease:
+        description: 'Is Pre-release?'
+        required: true
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-publish:
+    name: Build & Publish Native AOT (${{ matrix.os }} / ${{ matrix.rid }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        include:
+          - os: windows-latest
+            rid: win-x64
+            binary_name: AccessUtility.exe
+          - os: ubuntu-latest
+            rid: linux-x64
+            binary_name: AccessUtility
+          - os: macos-latest
+            rid: osx-arm64
+            binary_name: AccessUtility
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v5
+
+      - name: Setup .NET 10 SDK
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Publish Native AOT Executable
+        run: |
+          dotnet publish AccessUtility.csproj -c Release -r ${{ matrix.rid }} -p:PublishAot=true -o ./publish-${{ matrix.rid }}
+
+      - name: Upload Build Artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: AccessUtility-${{ matrix.rid }}
+          path: ./publish-${{ matrix.rid }}/${{ matrix.binary_name }}
+
+  create-release:
+    name: Create GitHub Release
+    needs: build-and-publish
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v5
+
+      - name: Download All Native AOT Artifacts
+        uses: actions/download-artifact@v7
+        with:
+          path: ./artifacts
+
+      - name: Zip Artifacts for Release
+        run: |
+          cd ./artifacts
+          zip -j AccessUtility-win-x64.zip AccessUtility-win-x64/*
+          tar -czf AccessUtility-linux-x64.tar.gz -C AccessUtility-linux-x64 .
+          tar -czf AccessUtility-osx-arm64.tar.gz -C AccessUtility-osx-arm64 .
+
+      - name: Create Release & Upload Assets
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.event.inputs.version_tag }}
+          name: Release ${{ github.event.inputs.version_tag }}
+          files: |
+            ./artifacts/AccessUtility-win-x64.zip
+            ./artifacts/AccessUtility-linux-x64.tar.gz
+            ./artifacts/AccessUtility-osx-arm64.tar.gz
+          draft: false
+          prerelease: ${{ github.event.inputs.is_prerelease }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
