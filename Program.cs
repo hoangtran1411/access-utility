@@ -98,6 +98,10 @@ namespace AccessUtility
                     RunDaemonCommand(args[1], interval, backupDir);
                     break;
 
+                case "update":
+                    AutoUpdater.CheckAndUpdateAsync().GetAwaiter().GetResult();
+                    break;
+
                 case "ax" or "ai" or "ask":
                     string query = args.Length >= 2 ? string.Join(" ", args[1..]) : "";
                     if (string.IsNullOrWhiteSpace(query))

@@ -57,6 +57,12 @@
 - [x] Add `AccessUtility.exe daemon run` CLI command
 - [x] Setup scheduled Windows Task / systemd integration docs
 
+### 🔄 [Feature 07: GitHub Auto Updater](07-feature-auto-updater.md) ✅ COMPLETED
+- [x] Implement GitHub API Release checker in `Engine/AutoUpdater.cs`
+- [x] Add update binary download and OS-specific extraction
+- [x] Implement seamless binary replacement
+- [x] Add `AccessUtility.exe update` CLI command
+
 ## 📈 Status Overview
 ```text
 [X] Core Foundation (10/10 Tasks Completed)
@@ -65,4 +71,5 @@
 [X] Feature 03: OLE File Extractor (4/4 Tasks) ✅
 [X] Feature 04: Query SQL Extractor (4/4 Tasks) ✅
 [X] Feature 05: Maintenance Daemon (4/4 Tasks) ✅
+[X] Feature 07: GitHub Auto Updater (4/4 Tasks) ✅
 ```

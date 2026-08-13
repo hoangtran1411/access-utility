@@ -140,6 +140,16 @@ namespace AccessUtility.Engine
                 },
                 new CommandDescriptor
                 {
+                    Name = "update",
+                    Aliases = new string[0],
+                    Summary = "Update AccessUtility to the latest release",
+                    Description = "Queries GitHub for the latest release version, downloads the proper binaries for your OS architecture, and replaces the current executable.",
+                    Usage = "AccessUtility.exe update",
+                    Flags = new List<string>(),
+                    Examples = new List<string> { "AccessUtility.exe update" }
+                },
+                new CommandDescriptor
+                {
                     Name = "ax",
                     Aliases = new[] { "ai", "ask" },
                     Summary = "AX (AI Experiment) Natural Language Command Assistant",
