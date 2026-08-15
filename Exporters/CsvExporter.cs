@@ -38,6 +38,31 @@ namespace AccessUtility.Exporters
             return outputFilePath;
         }
 
+        public static async Task<string> ExportTableStreamAsync(AccessTable table, IAsyncEnumerable<AccessRow> rows, string outputFilePath, CancellationToken ct = default)
+        {
+            string dir = Path.GetDirectoryName(Path.GetFullPath(outputFilePath)) ?? ".";
+            if (!Directory.Exists(dir)) Directory.CreateDirectory(dir);
+
+            using var writer = new StreamWriter(outputFilePath, append: false, Encoding.UTF8);
+
+            // Header
+            var headerLine = string.Join(",", table.Columns.ConvertAll(c => EscapeCsv(c.Name)));
+            await writer.WriteLineAsync(headerLine.AsMemory(), ct);
+
+            // Rows Stream
+            await foreach (var row in rows.WithCancellation(ct))
+            {
+                var line = string.Join(",", table.Columns.ConvertAll(c =>
+                {
+                    row.Values.TryGetValue(c.Name, out var val);
+                    return EscapeCsv(val?.ToString() ?? "");
+                }));
+                await writer.WriteLineAsync(line.AsMemory(), ct);
+            }
+
+            return outputFilePath;
+        }
+
         private static string EscapeCsv(string field)
         {
             if (field.Contains(",") || field.Contains("\"") || field.Contains("\n") || field.Contains("\r"))

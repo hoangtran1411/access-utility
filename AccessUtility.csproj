@@ -9,6 +9,7 @@
     <OptimizationPreference>Speed</OptimizationPreference>
     <InvariantGlobalization>false</InvariantGlobalization>
     <RootNamespace>AccessUtility</RootNamespace>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <DefaultItemExcludes>$(DefaultItemExcludes);AccessUtility.Tests\**</DefaultItemExcludes>
   </PropertyGroup>
 

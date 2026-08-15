@@ -139,6 +139,62 @@ namespace AccessUtility.Engine
             return result;
         }
 
+        public static void WriteDatabase(AccessDatabase db, string targetPath)
+        {
+            using (var ms = new MemoryStream())
+            {
+                // Write Page 0 (Header)
+                byte[] headerPage = CreateHeaderPage();
+                ms.Write(headerPage, 0, PageSize);
+
+                // Write Page 1 (PAM - Page Allocation Map)
+                byte[] pamPage = new byte[PageSize];
+                pamPage[0] = 0x05; // PAM page type
+                pamPage[1] = 0x01;
+                ms.Write(pamPage, 0, PageSize);
+
+                foreach (var table in db.Tables)
+                {
+                    if (table.Columns.Count == 0) continue;
+
+                    uint tdefPageNum = (uint)(ms.Position / PageSize);
+                    table.TdefPage = tdefPageNum;
+
+                    // Write Table Definition Page
+                    byte[] tdefBytes = CreateTdefPage(table);
+                    ms.Write(tdefBytes, 0, PageSize);
+
+                    // Write Data Pages continuously
+                    int rowsInPage = 0;
+                    MemoryStream dataPageMs = CreateNewDataPage(tdefPageNum);
+
+                    foreach (var row in table.Rows)
+                    {
+                        byte[] recordBytes = SerializeRow(row, table.Columns);
+                        if (dataPageMs.Position + recordBytes.Length + 4 > PageSize - 32)
+                        {
+                            // Flush full data page
+                            FinalizeAndWriteDataPage(ms, dataPageMs);
+                            dataPageMs = CreateNewDataPage(tdefPageNum);
+                        }
+
+                        AppendRecordToDataPage(dataPageMs, recordBytes);
+                        rowsInPage++;
+                    }
+
+                    if (rowsInPage > 0 || table.Rows.Count == 0)
+                    {
+                        FinalizeAndWriteDataPage(ms, dataPageMs);
+                    }
+                }
+
+                string targetDir = Path.GetDirectoryName(Path.GetFullPath(targetPath)) ?? ".";
+                if (!Directory.Exists(targetDir)) Directory.CreateDirectory(targetDir);
+
+                File.WriteAllBytes(targetPath, ms.ToArray());
+            }
+        }
+
         private static byte[] CreateHeaderPage()
         {
             byte[] header = new byte[PageSize];

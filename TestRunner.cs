@@ -44,18 +44,8 @@ namespace AccessUtility.Tests
 
             db.Tables.Add(table);
 
-            // Write initial header page to bootstrap source file
-            byte[] initialBuffer = new byte[2048 * 4]; // 4 pages
-            initialBuffer[0] = 0x00;
-            initialBuffer[1] = 0x01;
-            byte[] magic = Encoding.ASCII.GetBytes("Standard Jet DB\0");
-            Array.Copy(magic, 0, initialBuffer, 4, magic.Length);
-            initialBuffer[0x14] = 0x01; // Jet 3.5 version byte
-
-            File.WriteAllBytes(mdbPath, initialBuffer);
-
-            // Now perform compact to build full defragmented schema and rows
-            Jet3Compactor.Compact(mdbPath, mdbPath, forceUnlock: true);
+            // Write full sample Jet 3.5 database with schema and rows
+            Jet3Compactor.WriteDatabase(db, mdbPath);
         }
 
         public static void CreateSampleLockFile(string mdbPath)

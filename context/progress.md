@@ -68,11 +68,11 @@
 - [x] Build `Engine/LogViewer.cs` to query logs
 - [x] Add CLI `logs` command with `--tail` and `--level` filters
 
-### ⚡ [Feature 09: Zero-Copy MemoryMappedFile & Streaming Engine](09-feature-memory-mapped-streaming.md) ⏳ PLANNED
-- [ ] Build `Engine/Jet3MemoryReader.cs` using `MemoryMappedFile` and `ReadOnlySpan<byte>`
-- [ ] Refactor `ReadTableRows` to support `IAsyncEnumerable<AccessRow>` streaming
-- [ ] Connect streaming iterators to CSV and SQLite exporters
-- [ ] Add xUnit performance and allocation benchmarks
+### ⚡ [Feature 09: Zero-Copy MemoryMappedFile & Streaming Engine](09-feature-memory-mapped-streaming.md) ✅ COMPLETED
+- [x] Build `Engine/Jet3MemoryReader.cs` using `MemoryMappedFile` and `ReadOnlySpan<byte>`
+- [x] Refactor `ReadTableRows` to support `IAsyncEnumerable<AccessRow>` streaming
+- [x] Connect streaming iterators to CSV and SQLite exporters
+- [x] Add xUnit performance and allocation benchmarks (`AccessUtility.Tests/Jet3MemoryReaderTests.cs`)
 
 ### 📊 [Feature 10: Modern Analytical Exporters (Parquet & DuckDB)](10-feature-parquet-duckdb-exporters.md) ⏳ PLANNED
 - [ ] Build `Exporters/ParquetExporter.cs` for Native AOT Parquet output
@@ -102,7 +102,7 @@
 [X] Feature 05: Maintenance Daemon (4/4 Tasks) ✅
 [X] Feature 07: GitHub Auto Updater (4/4 Tasks) ✅
 [X] Feature 08: SQLite Log Viewer (3/3 Tasks) ✅
-[ ] Feature 09: MemoryMappedFile & Streaming Engine (0/4 Tasks) ⏳
+[X] Feature 09: MemoryMappedFile & Streaming Engine (4/4 Tasks) ✅
 [ ] Feature 10: Analytical Exporters: Parquet & DuckDB (0/4 Tasks) ⏳
 [ ] Feature 11: Web Sector Map & Hex Inspector (0/4 Tasks) ⏳
 [ ] Feature 12: Forensic Record Carver (0/4 Tasks) ⏳

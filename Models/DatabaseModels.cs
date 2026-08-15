@@ -34,6 +34,22 @@ namespace AccessUtility.Models
         public bool IsNullable { get; set; }
     }
 
+    public class AccessRow
+    {
+        public Dictionary<string, object?> Values { get; set; } = new(StringComparer.OrdinalIgnoreCase);
+
+        public object? this[string columnName]
+        {
+            get => Values.TryGetValue(columnName, out var val) ? val : null;
+            set => Values[columnName] = value;
+        }
+
+        public int Count => Values.Count;
+
+        public static implicit operator Dictionary<string, object?>(AccessRow row) => row.Values;
+        public static implicit operator AccessRow(Dictionary<string, object?> dict) => new() { Values = dict };
+    }
+
     public class AccessTable
     {
         public string Name { get; set; } = string.Empty;
