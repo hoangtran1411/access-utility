@@ -43,6 +43,11 @@ Check out the `docs/` folder for comprehensive guides:
 6. [Complete CLI Usage Commands](docs/06-cli-usage.md)
 7. [Serilog Configuration & Telemetry](docs/07-serilog-configuration.md)
 8. [SQLite Log Viewer Guide](docs/08-log-viewer-guide.md)
+9. [Recommendations & Future Roadmap](docs/09-recommendations-and-future-roadmap.md)
+10. [Phase 1: Memory & Streaming Optimizations](docs/10-phase1-memory-and-streaming.md)
+11. [Phase 2: Modern Analytical Exporters (Parquet & DuckDB)](docs/11-phase2-modern-exporters.md)
+12. [Phase 3: Web Dashboard Visualizer & ERD Diagrams](docs/12-phase3-web-visualizer-and-erd.md)
+13. [Phase 4: Forensic Record Carving & Deleted Data Recovery](docs/13-phase4-forensic-carving.md)
 
 ## 🤝 Contributing
 See [CONTRIBUTING.md](CONTRIBUTING.md) for details on how you can help.
