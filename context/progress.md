@@ -68,6 +68,30 @@
 - [x] Build `Engine/LogViewer.cs` to query logs
 - [x] Add CLI `logs` command with `--tail` and `--level` filters
 
+### ⚡ [Feature 09: Zero-Copy MemoryMappedFile & Streaming Engine](09-feature-memory-mapped-streaming.md) ⏳ PLANNED
+- [ ] Build `Engine/Jet3MemoryReader.cs` using `MemoryMappedFile` and `ReadOnlySpan<byte>`
+- [ ] Refactor `ReadTableRows` to support `IAsyncEnumerable<AccessRow>` streaming
+- [ ] Connect streaming iterators to CSV and SQLite exporters
+- [ ] Add xUnit performance and allocation benchmarks
+
+### 📊 [Feature 10: Modern Analytical Exporters (Parquet & DuckDB)](10-feature-parquet-duckdb-exporters.md) ⏳ PLANNED
+- [ ] Build `Exporters/ParquetExporter.cs` for Native AOT Parquet output
+- [ ] Build `Exporters/DuckDbExporter.cs` for direct DuckDB analytical database generation
+- [ ] Build `Exporters/JsonLinesExporter.cs` for streaming line-delimited JSON
+- [ ] Register `--format parquet`, `--format duckdb`, `--format jsonl` CLI options
+
+### 🗺️ [Feature 11: Web Dashboard Sector Map, Hex Inspector & ERD](11-feature-sector-map-and-hex-inspector.md) ⏳ PLANNED
+- [ ] Implement `/api/pages` page classification endpoint in `WebServer.cs`
+- [ ] Implement `/api/pages/{pageIndex}/hex` binary inspector endpoint
+- [ ] Integrate visual Sector Grid and Hex Viewer in `DashboardHtml.cs`
+- [ ] Add Mermaid ERD relationship generator to schema views
+
+### 🔬 [Feature 12: Forensic Record Carver & Deleted Data Recovery](12-feature-forensic-record-carver.md) ⏳ PLANNED
+- [ ] Build `Engine/ForensicCarver.cs` for slack space and freed page scanning
+- [ ] Implement slot table offset boundary analysis
+- [ ] Build schema-guided column reconstruction and confidence scoring
+- [ ] Add CLI flags `repair --carve-deleted` and `diagnose --forensic-scan`
+
 ## 📈 Status Overview
 ```text
 [X] Core Foundation (10/10 Tasks Completed)
@@ -78,4 +102,8 @@
 [X] Feature 05: Maintenance Daemon (4/4 Tasks) ✅
 [X] Feature 07: GitHub Auto Updater (4/4 Tasks) ✅
 [X] Feature 08: SQLite Log Viewer (3/3 Tasks) ✅
+[ ] Feature 09: MemoryMappedFile & Streaming Engine (0/4 Tasks) ⏳
+[ ] Feature 10: Analytical Exporters: Parquet & DuckDB (0/4 Tasks) ⏳
+[ ] Feature 11: Web Sector Map & Hex Inspector (0/4 Tasks) ⏳
+[ ] Feature 12: Forensic Record Carver (0/4 Tasks) ⏳
 ```
