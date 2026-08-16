@@ -71,10 +71,31 @@ namespace AccessUtility
                     break;
 
                 case "diff" or "compare":
+                    if (args.Length < 2) { CommandRegistry.PrintCobraHelp(); return; }
+                    string diffFmt = GetArgValue(args, "--format") ?? "sql";
+                    if (diffFmt.Equals("erd", StringComparison.OrdinalIgnoreCase))
+                    {
+                        string erdOut = GetArgValue(args, "--output") ?? Path.ChangeExtension(args[1], "_erd.md");
+                        RunErdCommand(args[1], erdOut);
+                        break;
+                    }
                     if (args.Length < 3) { CommandRegistry.PrintCobraHelp(); return; }
                     string diffOut = GetArgValue(args, "--output") ?? Path.ChangeExtension(args[1], ".diff.sql");
                     string diffDialect = GetArgValue(args, "--dialect") ?? "ansi";
                     RunDiffCommand(args[1], args[2], diffOut, diffDialect);
+                    break;
+
+                case "erd" or "diagram":
+                    if (args.Length < 2) { CommandRegistry.PrintCobraHelp(); return; }
+                    string erdTarget = GetArgValue(args, "--output") ?? Path.ChangeExtension(args[1], "_erd.md");
+                    RunErdCommand(args[1], erdTarget);
+                    break;
+
+                case "hex":
+                    if (args.Length < 2) { CommandRegistry.PrintCobraHelp(); return; }
+                    string pageStr = GetArgValue(args, "--page") ?? "0";
+                    int page = int.TryParse(pageStr, out int hexPage) ? hexPage : 0;
+                    RunHexCommand(args[1], page);
                     break;
 
                 case "extract-ole" or "extract":
@@ -441,6 +462,33 @@ namespace AccessUtility
             };
 
             Console.WriteLine($"[SUCCESS] Exported successfully to: {outPath}");
+        }
+
+        private static void RunErdCommand(string mdbPath, string? outputPath)
+        {
+            Console.WriteLine($"\n[+] Generating Mermaid ERD Schema Diagram for: {mdbPath}");
+            var db = Jet3BinaryReader.ReadDatabase(mdbPath, out _);
+            var erd = ErdGenerator.GenerateErd(db);
+
+            string outPath = outputPath ?? Path.ChangeExtension(mdbPath, "_erd.md");
+            ErdGenerator.ExportErdToMarkdown(db, outPath);
+
+            Console.WriteLine($"[SUCCESS] Discovered {erd.TableCount} tables and {erd.RelationshipCount} foreign key relationships.");
+            Console.WriteLine($"          Diagram markdown exported to: {outPath}\n");
+            Console.WriteLine("--- Mermaid Diagram ---");
+            Console.WriteLine(erd.MermaidCode);
+        }
+
+        private static void RunHexCommand(string mdbPath, int pageIndex)
+        {
+            Console.WriteLine($"\n[+] Inspecting 2KB Sector Page #{pageIndex} of: {mdbPath}");
+            var hexView = SectorMapAnalyzer.GetPageHexView(mdbPath, pageIndex);
+            Console.WriteLine($"    Page Type: {hexView.PageType} | Status: {hexView.Status} | {hexView.Description}\n");
+
+            foreach (var line in hexView.HexLines)
+            {
+                Console.WriteLine(line.FormattedLine);
+            }
         }
 
         private static string? GetArgValue(string[] args, string flag)

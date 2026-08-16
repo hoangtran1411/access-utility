@@ -131,6 +131,34 @@ namespace AccessUtility.Engine
                 },
                 new CommandDescriptor
                 {
+                    Name = "erd",
+                    Aliases = new[] { "diagram" },
+                    Summary = "Generate Mermaid Entity-Relationship Diagram (ERD)",
+                    Description = "Analyzes database schema, primary keys, and foreign keys to generate clean Mermaid ERD diagrams and markdown reports.",
+                    Usage = "AccessUtility.exe erd <file.mdb> [--output schema_erd.md]",
+                    Flags = new List<string> { "--output <path>" },
+                    Examples = new List<string>
+                    {
+                        "AccessUtility.exe erd Northwind97.mdb",
+                        "AccessUtility.exe erd Northwind97.mdb --output ./docs/schema.md"
+                    }
+                },
+                new CommandDescriptor
+                {
+                    Name = "hex",
+                    Aliases = new[] { "page", "inspect-page" },
+                    Summary = "Inspect raw 2048-byte sector page hex & ASCII bytes",
+                    Description = "Renders formatted 16-byte hexadecimal dump and ASCII characters for any specified page index.",
+                    Usage = "AccessUtility.exe hex <file.mdb> [--page 0]",
+                    Flags = new List<string> { "--page <number>" },
+                    Examples = new List<string>
+                    {
+                        "AccessUtility.exe hex sample97.mdb --page 0",
+                        "AccessUtility.exe hex sample97.mdb --page 2"
+                    }
+                },
+                new CommandDescriptor
+                {
                     Name = "daemon",
                     Aliases = new[] { "maintain" },
                     Summary = "Run automated background maintenance",

@@ -81,11 +81,12 @@
 - [x] Register `--format parquet`, `--format duckdb`, `--format jsonl` CLI options
 - [x] Add automated test suite in `AccessUtility.Tests/ExportersTests.cs` (7/7 tests passing)
 
-### 🗺️ [Feature 11: Web Dashboard Sector Map, Hex Inspector & ERD](11-feature-sector-map-and-hex-inspector.md) ⏳ PLANNED
-- [ ] Implement `/api/pages` page classification endpoint in `WebServer.cs`
-- [ ] Implement `/api/pages/{pageIndex}/hex` binary inspector endpoint
-- [ ] Integrate visual Sector Grid and Hex Viewer in `DashboardHtml.cs`
-- [ ] Add Mermaid ERD relationship generator to schema views
+### 🗺️ [Feature 11: Web Dashboard Sector Map, Hex Inspector & ERD](11-feature-sector-map-and-hex-inspector.md) ✅ COMPLETED
+- [x] Implement `/api/pages` page classification endpoint in `WebServer.cs`
+- [x] Implement `/api/pages/{pageIndex}/hex` binary inspector endpoint
+- [x] Integrate visual Sector Grid and Hex Viewer in `DashboardHtml.cs`
+- [x] Add Mermaid ERD relationship generator to schema views
+- [x] Add automated test suite in `AccessUtility.Tests/SectorMapAndErdTests.cs` (4/4 tests passing)
 
 ### 🔬 [Feature 12: Forensic Record Carver & Deleted Data Recovery](12-feature-forensic-record-carver.md) ⏳ PLANNED
 - [ ] Build `Engine/ForensicCarver.cs` for slack space and freed page scanning
@@ -105,6 +106,6 @@
 [X] Feature 08: SQLite Log Viewer (3/3 Tasks) ✅
 [X] Feature 09: MemoryMappedFile & Streaming Engine (4/4 Tasks) ✅
 [X] Feature 10: Analytical Exporters: Parquet & DuckDB (5/5 Tasks) ✅
-[ ] Feature 11: Web Sector Map & Hex Inspector (0/4 Tasks) ⏳
+[X] Feature 11: Web Sector Map & Hex Inspector (5/5 Tasks) ✅
 [ ] Feature 12: Forensic Record Carver (0/4 Tasks) ⏳
 ```

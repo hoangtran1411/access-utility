@@ -80,6 +80,28 @@ namespace AccessUtility.Web
                 return Results.Json(new ExportResponse { Success = true, OutputPath = outPath, Format = fmt }, AppJsonContext.Default.ExportResponse);
             });
 
+            // API: Sector Map
+            app.MapGet("/api/pages", (string path) =>
+            {
+                var report = SectorMapAnalyzer.AnalyzeSectorMap(path);
+                return Results.Json(report, AppJsonContext.Default.SectorMapReport);
+            });
+
+            // API: Page Hex Inspector
+            app.MapGet("/api/pages/{pageIndex:int}/hex", (int pageIndex, string path) =>
+            {
+                var hexView = SectorMapAnalyzer.GetPageHexView(path, pageIndex);
+                return Results.Json(hexView, AppJsonContext.Default.PageHexView);
+            });
+
+            // API: Mermaid Schema ERD
+            app.MapGet("/api/erd", (string path) =>
+            {
+                var db = Jet3BinaryReader.ReadDatabase(path, out _);
+                var erd = ErdGenerator.GenerateErd(db);
+                return Results.Json(erd, AppJsonContext.Default.ErdDiagramResult);
+            });
+
             // API: Logs
             app.MapGet("/api/logs", (int limit = 50, string? level = null) =>
             {

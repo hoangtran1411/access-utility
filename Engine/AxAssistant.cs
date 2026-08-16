@@ -51,6 +51,10 @@ namespace AccessUtility.Engine
             {
                 plan.ActionSteps.Add("repair");
             }
+            if (lower.Contains("erd") || lower.Contains("diagram") || lower.Contains("mermaid") || lower.Contains("schema graph"))
+            {
+                plan.ActionSteps.Add("erd");
+            }
             if (lower.Contains("export") || lower.Contains("convert") || lower.Contains("sqlite") || lower.Contains("csv") || lower.Contains("sql") || lower.Contains("parquet") || lower.Contains("duckdb") || lower.Contains("jsonl"))
             {
                 plan.ActionSteps.Add("export");
@@ -130,6 +134,13 @@ namespace AccessUtility.Engine
                         string repairTarget = Path.ChangeExtension(plan.TargetFile, ".repaired.mdb");
                         var repRes = Jet3Repairer.Repair(plan.TargetFile, repairTarget, plan.ForceUnlock);
                         Console.WriteLine($"   [AX] Repairer: {repRes.Message}");
+                        break;
+
+                    case "erd":
+                        var dbErd = Jet3BinaryReader.ReadDatabase(plan.TargetFile, out _);
+                        string erdPath = Path.ChangeExtension(plan.TargetFile, "_erd.md");
+                        ErdGenerator.ExportErdToMarkdown(dbErd, erdPath);
+                        Console.WriteLine($"   [AX] ERD Generator: Schema diagram exported to {erdPath}");
                         break;
 
                     case "export":
