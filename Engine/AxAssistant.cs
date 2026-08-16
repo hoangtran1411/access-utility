@@ -55,6 +55,10 @@ namespace AccessUtility.Engine
             {
                 plan.ActionSteps.Add("erd");
             }
+            if (lower.Contains("carve") || lower.Contains("forensic") || lower.Contains("salvage") || lower.Contains("deleted"))
+            {
+                plan.ActionSteps.Add("carve");
+            }
             if (lower.Contains("export") || lower.Contains("convert") || lower.Contains("sqlite") || lower.Contains("csv") || lower.Contains("sql") || lower.Contains("parquet") || lower.Contains("duckdb") || lower.Contains("jsonl"))
             {
                 plan.ActionSteps.Add("export");
@@ -141,6 +145,13 @@ namespace AccessUtility.Engine
                         string erdPath = Path.ChangeExtension(plan.TargetFile, "_erd.md");
                         ErdGenerator.ExportErdToMarkdown(dbErd, erdPath);
                         Console.WriteLine($"   [AX] ERD Generator: Schema diagram exported to {erdPath}");
+                        break;
+
+                    case "carve":
+                        var carveReport = ForensicCarver.CarveDatabase(plan.TargetFile);
+                        string carvedPath = Path.ChangeExtension(plan.TargetFile, ".carved.sqlite");
+                        ForensicCarver.ExportCarvedRecordsToSqlite(carveReport, carvedPath);
+                        Console.WriteLine($"   [AX] Forensic Carver: Salvaged {carveReport.SalvagedDeletedRowsCount} deleted records into {carvedPath}");
                         break;
 
                     case "export":

@@ -88,11 +88,12 @@
 - [x] Add Mermaid ERD relationship generator to schema views
 - [x] Add automated test suite in `AccessUtility.Tests/SectorMapAndErdTests.cs` (4/4 tests passing)
 
-### 🔬 [Feature 12: Forensic Record Carver & Deleted Data Recovery](12-feature-forensic-record-carver.md) ⏳ PLANNED
-- [ ] Build `Engine/ForensicCarver.cs` for slack space and freed page scanning
-- [ ] Implement slot table offset boundary analysis
-- [ ] Build schema-guided column reconstruction and confidence scoring
-- [ ] Add CLI flags `repair --carve-deleted` and `diagnose --forensic-scan`
+### 🔬 [Feature 12: Forensic Record Carver & Deleted Data Recovery](12-feature-forensic-record-carver.md) ✅ COMPLETED
+- [x] Build `Engine/ForensicCarver.cs` for slack space and freed page scanning
+- [x] Implement slot table offset boundary analysis & deleted slot pointer recovery
+- [x] Build schema-guided column reconstruction, confidence scoring, and ranking
+- [x] Add CLI flags `repair --carve-deleted`, `diagnose --forensic-scan`, and `carve` command
+- [x] Add automated test suite in `AccessUtility.Tests/ForensicCarverTests.cs` (3/3 tests passing)
 
 ## 📈 Status Overview
 ```text
@@ -107,5 +108,5 @@
 [X] Feature 09: MemoryMappedFile & Streaming Engine (4/4 Tasks) ✅
 [X] Feature 10: Analytical Exporters: Parquet & DuckDB (5/5 Tasks) ✅
 [X] Feature 11: Web Sector Map & Hex Inspector (5/5 Tasks) ✅
-[ ] Feature 12: Forensic Record Carver (0/4 Tasks) ⏳
+[X] Feature 12: Forensic Record Carver (5/5 Tasks) ✅
 ```

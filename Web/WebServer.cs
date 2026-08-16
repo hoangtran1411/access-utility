@@ -102,6 +102,13 @@ namespace AccessUtility.Web
                 return Results.Json(erd, AppJsonContext.Default.ErdDiagramResult);
             });
 
+            // API: Forensic Record Carver
+            app.MapGet("/api/forensic-carve", (string path, string? table = null) =>
+            {
+                var report = ForensicCarver.CarveDatabase(path, table);
+                return Results.Json(report, AppJsonContext.Default.ForensicCarveReport);
+            });
+
             // API: Logs
             app.MapGet("/api/logs", (int limit = 50, string? level = null) =>
             {

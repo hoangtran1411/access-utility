@@ -40,7 +40,8 @@ namespace AccessUtility
 
                 case "diagnose" or "diag" or "health":
                     if (args.Length < 2) { CommandRegistry.PrintCobraHelp(); return; }
-                    RunDiagnoseCommand(args[1]);
+                    bool forensicScan = HasFlag(args, "--forensic-scan");
+                    RunDiagnoseCommand(args[1], forensicScan);
                     break;
 
                 case "compact" or "cmp" or "defrag":
@@ -54,7 +55,15 @@ namespace AccessUtility
                     if (args.Length < 2) { CommandRegistry.PrintCobraHelp(); return; }
                     string repairTarget = GetArgValue(args, "--output") ?? Path.ChangeExtension(args[1], ".repaired.mdb");
                     bool forceRepair = HasFlag(args, "--force-unlock");
-                    RunRepairCommand(args[1], repairTarget, forceRepair);
+                    bool carveDeleted = HasFlag(args, "--carve-deleted");
+                    RunRepairCommand(args[1], repairTarget, forceRepair, carveDeleted);
+                    break;
+
+                case "carve" or "salvage" or "forensic":
+                    if (args.Length < 2) { CommandRegistry.PrintCobraHelp(); return; }
+                    string? carveTable = GetArgValue(args, "--table");
+                    string? carveOut = GetArgValue(args, "--output");
+                    RunCarveCommand(args[1], carveTable, carveOut);
                     break;
 
                 case "export" or "exp" or "convert":
@@ -212,9 +221,9 @@ namespace AccessUtility
             }
         }
 
-        private static void RunDiagnoseCommand(string mdbPath)
+        private static void RunDiagnoseCommand(string mdbPath, bool forensicScan = false)
         {
-            Log.Information("Executing DiagnoseCommand on {Path}", mdbPath);
+            Log.Information("Executing DiagnoseCommand on {Path} (ForensicScan={ForensicScan})", mdbPath, forensicScan);
             Console.WriteLine($"\n[+] Running Database Health Diagnostics for: {mdbPath}");
             var db = Jet3BinaryReader.ReadDatabase(mdbPath, out var diag);
 
@@ -233,6 +242,28 @@ namespace AccessUtility
                 foreach (var table in diag.TableSummaries)
                 {
                     Console.WriteLine($"  * {table}");
+                }
+            }
+
+            if (forensicScan)
+            {
+                Console.WriteLine("\n[+] Executing Deep Forensic Slack Space Analysis...");
+                var carveReport = ForensicCarver.CarveDatabase(mdbPath);
+                Console.WriteLine($"\n--- Forensic Carve Scan Results ---");
+                Console.WriteLine($"  Pages Scanned         : {carveReport.TotalPagesScanned}");
+                Console.WriteLine($"  Active Rows Detected  : {carveReport.ActiveRowsCount}");
+                Console.WriteLine($"  Deleted Rows Salvaged : {carveReport.SalvagedDeletedRowsCount}");
+                Console.WriteLine($"  High Confidence (>80%): {carveReport.HighConfidenceCount}");
+                Console.WriteLine($"  Medium Confidence     : {carveReport.MediumConfidenceCount}");
+                Console.WriteLine($"  Low Confidence        : {carveReport.LowConfidenceCount}");
+
+                if (carveReport.TableSummaries.Count > 0)
+                {
+                    Console.WriteLine("\n--- Salvaged Table Breakdown ---");
+                    foreach (var ts in carveReport.TableSummaries)
+                    {
+                        Console.WriteLine($"  * Table '{ts.TableName}': {ts.DeletedRowsSalvaged} deleted records salvaged (Avg Confidence: {ts.AverageConfidence}%)");
+                    }
                 }
             }
         }
@@ -259,9 +290,9 @@ namespace AccessUtility
             }
         }
 
-        private static void RunRepairCommand(string srcPath, string targetPath, bool force)
+        private static void RunRepairCommand(string srcPath, string targetPath, bool force, bool carveDeleted = false)
         {
-            Log.Information("Executing RepairCommand on {SourcePath} to {TargetPath}", srcPath, targetPath);
+            Log.Information("Executing RepairCommand on {SourcePath} to {TargetPath} (CarveDeleted={CarveDeleted})", srcPath, targetPath, carveDeleted);
             Console.WriteLine($"\n[+] Repairing Access 97 Database: {srcPath}");
             Console.WriteLine($"    Target Output: {targetPath}");
 
@@ -274,11 +305,50 @@ namespace AccessUtility
                 Console.WriteLine($"  Corrupt Pages  : {res.CorruptPagesIsolated}");
                 Console.WriteLine($"  Recovered Tables: {res.TotalTablesRecovered}");
                 Console.WriteLine($"  Salvaged Rows   : {res.TotalRowsSalvaged}");
+
+                if (carveDeleted)
+                {
+                    Console.WriteLine("\n[+] Deep Forensic Carving Enabled: Scanning unallocated slack space for deleted records...");
+                    var carveReport = ForensicCarver.CarveDatabase(srcPath);
+                    string carvedSqlite = Path.ChangeExtension(targetPath, ".carved.sqlite");
+                    ForensicCarver.ExportCarvedRecordsToSqlite(carveReport, carvedSqlite);
+
+                    Console.WriteLine($"[SUCCESS] Salvaged {carveReport.SalvagedDeletedRowsCount} deleted records ({carveReport.HighConfidenceCount} high confidence).");
+                    Console.WriteLine($"          Carved records database created at: {carvedSqlite}");
+                }
             }
             else
             {
                 Console.WriteLine($"\n[FAILED] {res.Message}");
             }
+        }
+
+        private static void RunCarveCommand(string mdbPath, string? tableName, string? outputPath)
+        {
+            Console.WriteLine($"\n[+] Running Forensic Record Carver on: {mdbPath}");
+            if (!string.IsNullOrEmpty(tableName)) Console.WriteLine($"    Target Table: {tableName}");
+
+            var carveReport = ForensicCarver.CarveDatabase(mdbPath, tableName);
+
+            Console.WriteLine($"\n--- Forensic Carving Report ---");
+            Console.WriteLine($"  Total Pages Scanned   : {carveReport.TotalPagesScanned}");
+            Console.WriteLine($"  Active Rows Found     : {carveReport.ActiveRowsCount}");
+            Console.WriteLine($"  Deleted Rows Salvaged : {carveReport.SalvagedDeletedRowsCount}");
+            Console.WriteLine($"  High Confidence (>80%): {carveReport.HighConfidenceCount}");
+            Console.WriteLine($"  Medium Confidence     : {carveReport.MediumConfidenceCount}");
+            Console.WriteLine($"  Low Confidence        : {carveReport.LowConfidenceCount}");
+
+            string target = outputPath ?? Path.ChangeExtension(mdbPath, ".carved.sqlite");
+            if (target.EndsWith(".json", StringComparison.OrdinalIgnoreCase))
+            {
+                ForensicCarver.ExportCarvedRecordsToJson(carveReport, target);
+            }
+            else
+            {
+                ForensicCarver.ExportCarvedRecordsToSqlite(carveReport, target);
+            }
+
+            Console.WriteLine($"\n[SUCCESS] Salvaged records exported to: {target}");
         }
 
         private static void RunPasswordCommand(string mdbPath, string? mdwPath)

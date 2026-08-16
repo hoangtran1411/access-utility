@@ -36,6 +36,11 @@ namespace AccessUtility.Web
     [JsonSerializable(typeof(List<ErdTableColumn>))]
     [JsonSerializable(typeof(ErdRelationship))]
     [JsonSerializable(typeof(List<ErdRelationship>))]
+    [JsonSerializable(typeof(ForensicCarveReport))]
+    [JsonSerializable(typeof(CarvedRecord))]
+    [JsonSerializable(typeof(List<CarvedRecord>))]
+    [JsonSerializable(typeof(CarvedTableSummary))]
+    [JsonSerializable(typeof(List<CarvedTableSummary>))]
     public partial class AppJsonContext : JsonSerializerContext
     {
     }

@@ -34,9 +34,14 @@ namespace AccessUtility.Engine
                     Name = "diagnose",
                     Aliases = new[] { "diag", "health" },
                     Summary = "Run database health & page fragmentation diagnostics",
-                    Description = "Analyzes Access 97 2048-byte page allocation maps (PAM), table definition counts (TDEF), data pages, fragmentation percentage, and corrupt page counts.",
-                    Usage = "AccessUtility.exe diagnose <file.mdb>",
-                    Examples = new List<string> { "AccessUtility.exe diagnose C:\\DB\\Northwind97.mdb" }
+                    Description = "Analyzes Access 97 2048-byte page allocation maps (PAM), table definition counts (TDEF), data pages, fragmentation percentage, corrupt page counts, and optional forensic slack space scanning.",
+                    Usage = "AccessUtility.exe diagnose <file.mdb> [--forensic-scan]",
+                    Flags = new List<string> { "--forensic-scan" },
+                    Examples = new List<string> 
+                    { 
+                        "AccessUtility.exe diagnose C:\\DB\\Northwind97.mdb",
+                        "AccessUtility.exe diagnose C:\\DB\\Northwind97.mdb --forensic-scan"
+                    }
                 },
                 new CommandDescriptor
                 {
@@ -53,10 +58,28 @@ namespace AccessUtility.Engine
                     Name = "repair",
                     Aliases = new[] { "rep", "recover" },
                     Summary = "Deep sector repair & data recovery",
-                    Description = "Scans all 2KB page sectors for valid table definitions and record rows, bypasses corrupted byte ranges, and reconstructs a healthy .mdb database.",
-                    Usage = "AccessUtility.exe repair <file.mdb> [--output target.mdb] [--force-unlock]",
-                    Flags = new List<string> { "--output <path>", "--force-unlock" },
-                    Examples = new List<string> { "AccessUtility.exe repair C:\\DB\\Corrupted.mdb --force-unlock" }
+                    Description = "Scans all 2KB page sectors for valid table definitions and record rows, bypasses corrupted byte ranges, salvages deleted rows from slack space, and reconstructs a healthy database.",
+                    Usage = "AccessUtility.exe repair <file.mdb> [--output target.mdb] [--force-unlock] [--carve-deleted]",
+                    Flags = new List<string> { "--output <path>", "--force-unlock", "--carve-deleted" },
+                    Examples = new List<string> 
+                    { 
+                        "AccessUtility.exe repair C:\\DB\\Corrupted.mdb --force-unlock",
+                        "AccessUtility.exe repair C:\\DB\\Damaged.mdb --carve-deleted"
+                    }
+                },
+                new CommandDescriptor
+                {
+                    Name = "carve",
+                    Aliases = new[] { "salvage", "forensic" },
+                    Summary = "Forensic record carver for deleted data & slack space",
+                    Description = "Scans unallocated page slack space and deleted slot directories, matches column schema heuristics, scores confidence, and exports salvaged deleted records to SQLite or JSON.",
+                    Usage = "AccessUtility.exe carve <file.mdb> [--table <tableName>] [--output <target.sqlite|target.json>]",
+                    Flags = new List<string> { "--table <name>", "--output <path>" },
+                    Examples = new List<string>
+                    {
+                        "AccessUtility.exe carve Damaged97.mdb",
+                        "AccessUtility.exe carve Damaged97.mdb --table Customers --output ./recovered/customers_deleted.sqlite"
+                    }
                 },
                 new CommandDescriptor
                 {
