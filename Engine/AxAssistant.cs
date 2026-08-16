@@ -160,7 +160,11 @@ namespace AccessUtility.Engine
                         string outPath = ext switch
                         {
                             "csv" => Exporters.CsvExporter.ExportTable(db.Tables.Count > 0 ? db.Tables[0] : new AccessTable(), Path.ChangeExtension(plan.TargetFile, ".csv")),
-                            "sql" => Exporters.SqlScriptExporter.ExportDatabase(db, Path.ChangeExtension(plan.TargetFile, ".sql")),
+                            "sql" or "migration" => Exporters.SqlMigrationExporter.ExportDatabase(db, Path.ChangeExtension(plan.TargetFile, ".sql"), new Exporters.SqlMigrationOptions
+                            {
+                                Dialect = Exporters.SqlMigrationExporter.ParseDialect(plan.RawQuery),
+                                SchemaOnly = plan.RawQuery.Contains("schema", StringComparison.OrdinalIgnoreCase) || plan.RawQuery.Contains("ddl", StringComparison.OrdinalIgnoreCase)
+                            }),
                             "parquet" or "pq" => Exporters.ParquetExporter.ExportDatabase(db, Path.ChangeExtension(plan.TargetFile, ".parquet")),
                             "duckdb" or "duck" => Exporters.DuckDbExporter.ExportDatabase(db, Path.ChangeExtension(plan.TargetFile, ".duckdb")),
                             "jsonl" or "jsonlines" or "ndjson" => Exporters.JsonLinesExporter.ExportDatabase(db, Path.ChangeExtension(plan.TargetFile, ".jsonl")),

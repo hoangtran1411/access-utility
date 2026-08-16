@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 
 namespace AccessUtility.Models
@@ -6,9 +5,13 @@ namespace AccessUtility.Models
     public class SectorPageInfo
     {
         public int PageIndex { get; set; }
-        public string PageType { get; set; } = "Slack"; // Header, PAM, TDEF, Data, Index, Slack, Corrupt
-        public string Status { get; set; } = "Valid";   // Valid, Free, Corrupt
+        public long ByteOffset { get; set; }
+        public byte PageTypeByte { get; set; }
+        public byte PageFlags { get; set; }
+        public string PageType { get; set; } = "Unknown";
+        public string Status { get; set; } = "Valid";
         public string Description { get; set; } = string.Empty;
+        public string? TableName { get; set; }
         public string? OwnerTable { get; set; }
         public uint? TdefPage { get; set; }
         public int? RecordCount { get; set; }
@@ -18,6 +21,7 @@ namespace AccessUtility.Models
     public class SectorMapReport
     {
         public string FilePath { get; set; } = string.Empty;
+        public string DatabasePath { get; set; } = string.Empty;
         public long FileSizeBytes { get; set; }
         public int TotalPages { get; set; }
         public int HeaderPages { get; set; }
@@ -70,6 +74,8 @@ namespace AccessUtility.Models
     {
         public string FromTable { get; set; } = string.Empty;
         public string ToTable { get; set; } = string.Empty;
+        public string FromColumn { get; set; } = string.Empty;
+        public string ToColumn { get; set; } = string.Empty;
         public string RelationshipType { get; set; } = "||--o{";
         public string Label { get; set; } = "references";
     }

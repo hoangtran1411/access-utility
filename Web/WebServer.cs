@@ -64,7 +64,7 @@ namespace AccessUtility.Web
             });
 
             // API: Export
-            app.MapGet("/api/export", (string path, string format) =>
+            app.MapGet("/api/export", (string path, string format, string? dialect, bool schemaOnly = false) =>
             {
                 var db = Jet3BinaryReader.ReadDatabase(path, out _);
                 string fmt = format?.ToLower() ?? "sqlite";
@@ -74,7 +74,7 @@ namespace AccessUtility.Web
                     "duckdb" or "duck" => DuckDbExporter.ExportDatabase(db, Path.ChangeExtension(path, ".duckdb")),
                     "jsonl" or "jsonlines" or "ndjson" => JsonLinesExporter.ExportDatabase(db, Path.ChangeExtension(path, ".jsonl")),
                     "csv" => CsvExporter.ExportTable(db.Tables.Count > 0 ? db.Tables[0] : new AccessTable(), Path.ChangeExtension(path, ".csv")),
-                    "sql" => SqlScriptExporter.ExportDatabase(db, Path.ChangeExtension(path, ".sql")),
+                    "sql" => SqlMigrationExporter.ExportDatabase(db, Path.ChangeExtension(path, ".sql"), new SqlMigrationOptions { Dialect = SqlMigrationExporter.ParseDialect(dialect), SchemaOnly = schemaOnly }),
                     _ => SqliteExporter.ExportDatabase(db, Path.ChangeExtension(path, ".sqlite"))
                 };
                 return Results.Json(new ExportResponse { Success = true, OutputPath = outPath, Format = fmt }, AppJsonContext.Default.ExportResponse);

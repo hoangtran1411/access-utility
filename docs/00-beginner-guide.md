@@ -22,20 +22,27 @@ Here is what the tool can do:
 ## 🧩 How is the Code Organized?
 If you want to read the code, here is where to look:
 
-- **`Models/`**: Contains core data models and blueprints (e.g., `AccessDatabase`, `AccessTable`, `AccessColumn`, `LogEntry`).
+- **`Models/`**: Contains core data models and blueprints (e.g., `AccessDatabase`, `AccessTable`, `AccessColumn`, `LogEntry`, `SectorMapModels`, `ForensicModels`).
 - **`Engine/`**: The core execution engine:
-  - `Jet3BinaryReader.cs`: Parses Jet 3.5 binary structures directly in C#.
+  - `Jet3BinaryReader.cs` & `Jet3MemoryReader.cs`: Zero-allocation memory-mapped binary parser for Jet 3.5.
   - `Jet3Compactor.cs` & `Jet3Repairer.cs`: Compacts and repairs database files.
+  - `SectorMapAnalyzer.cs` & `ErdGenerator.cs`: 2KB sector page classifier and Mermaid ERD generator.
+  - `ForensicCarver.cs`: Slack space deleted record salvaging and reconstruction.
   - `LdbLockInspector.cs`: Inspects `.ldb` lock files and cleans up stale orphan locks.
   - `SecurityReader.cs`: Decrypts database passwords and parses `System.mdw` workgroup files.
-  - `SchemaComparer.cs`: Compares two database schemas.
+  - `SchemaComparer.cs`: Compares two database schemas and generates delta DDL.
   - `OleExtractor.cs` & `QueryExtractor.cs`: Extracts embedded media (OLE) and saved SQL queries.
   - `MaintenanceDaemon.cs`: Background worker for automated cleanup and backups.
   - `AxAssistant.cs`: Natural language AI assistant for automated command execution.
   - `TuiEngine.cs` & `LogViewer.cs`: Terminal UI engine and native SQLite log viewer.
-- **`Exporters/`**: Export engines for CSV, SQLite, SQL Scripts, and Schema Migration DDL (`CsvExporter.cs`, `SqliteExporter.cs`, `SqlScriptExporter.cs`, `MigrationScriptExporter.cs`).
+- **`Exporters/`**: High-performance analytical and database export engines:
+  - `SqlMigrationExporter.cs`: Multi-dialect SQL migration scripts (PostgreSQL, MySQL, SQL Server, SQLite, Oracle, ANSI).
+  - `ParquetExporter.cs`: Strongly typed columnar Apache Parquet generator with Snappy compression.
+  - `DuckDbExporter.cs`: Analytical DuckDB database generator with native vector appenders.
+  - `JsonLinesExporter.cs`: Zero-allocation streaming line-delimited JSON (`.jsonl`).
+  - `SqliteExporter.cs`, `CsvExporter.cs`, `SqlScriptExporter.cs`.
 - **`Web/`**: Embedded ASP.NET Core Native AOT web server and interactive web dashboard (`WebServer.cs`, `DashboardHtml.cs`).
-- **`AccessUtility.Tests/`**: Automated xUnit test suite for validating lock inspector, compacting, repair, and exporters.
+- **`AccessUtility.Tests/`**: Automated xUnit test suite (80+ unit tests) validating all engine components, exporters, and forensic tools.
 - **`Program.cs`**: Entry point handling CLI argument parsing, interactive mode, and command dispatching.
 
 ## 🛠️ How Do I Run It?

@@ -118,13 +118,15 @@ namespace AccessUtility.Engine
                         string fromTable = SanitizeIdentifier(col.ForeignTable);
                         string toTable = t.Name;
 
-                        bool exists = relationships.Any(r => r.FromTable == fromTable && r.ToTable == toTable);
+                        bool exists = relationships.Any(r => r.FromTable == fromTable && r.ToTable == toTable && r.FromColumn == (col.ForeignColumn ?? col.Name));
                         if (!exists)
                         {
                             relationships.Add(new ErdRelationship
                             {
                                 FromTable = fromTable,
                                 ToTable = toTable,
+                                FromColumn = col.ForeignColumn ?? col.Name,
+                                ToColumn = col.Name,
                                 RelationshipType = "||--o{",
                                 Label = "references"
                             });

@@ -85,15 +85,30 @@ namespace AccessUtility.Engine
                 {
                     Name = "export",
                     Aliases = new[] { "exp", "convert" },
-                    Summary = "Export database to Parquet, DuckDB, JSON Lines, SQLite, SQL, or CSV",
-                    Description = "Converts Access 97 database schema and tables to modern storage and analytical formats including Apache Parquet, DuckDB, streaming JSON Lines, SQLite, SQL scripts, and CSV.",
-                    Usage = "AccessUtility.exe export <file.mdb> [--format parquet|duckdb|jsonl|sqlite|sql|csv] [--output <path>]",
-                    Flags = new List<string> { "--format <parquet|duckdb|jsonl|sqlite|sql|csv>", "--output <path>" },
+                    Summary = "Export database to Parquet, DuckDB, JSON Lines, SQLite, Multi-Dialect SQL, or CSV",
+                    Description = "Converts Access 97 database schema and tables to modern storage and analytical formats including Apache Parquet, DuckDB, streaming JSON Lines, SQLite, SQL migration scripts (PostgreSQL, MySQL, SQL Server, SQLite, Oracle, ANSI), and CSV.",
+                    Usage = "AccessUtility.exe export <file.mdb> [--format parquet|duckdb|jsonl|sqlite|sql|csv] [--dialect postgres|mysql|mssql|sqlite|oracle|ansi] [--schema-only] [--data-only] [--batch-size 250] [--output <path>]",
+                    Flags = new List<string> { "--format <parquet|duckdb|jsonl|sqlite|sql|csv>", "--dialect <postgres|mysql|mssql|sqlite|oracle|ansi>", "--schema-only", "--data-only", "--batch-size <number>", "--output <path>" },
                     Examples = new List<string> 
                     { 
                         "AccessUtility.exe export C:\\DB\\Main.mdb --format parquet --output ./exports/",
                         "AccessUtility.exe export C:\\DB\\Main.mdb --format duckdb --output ./analytics.duckdb",
-                        "AccessUtility.exe export C:\\DB\\Main.mdb --format jsonl --output ./exports/" 
+                        "AccessUtility.exe export C:\\DB\\Main.mdb --format sql --dialect postgres --output ./pg_migration.sql",
+                        "AccessUtility.exe export C:\\DB\\Main.mdb --format sql --dialect mysql --batch-size 500 --output ./mysql_data.sql"
+                    }
+                },
+                new CommandDescriptor
+                {
+                    Name = "schema",
+                    Aliases = new[] { "ddl" },
+                    Summary = "Export DDL schema and view definitions to SQL script",
+                    Description = "Generates clean DDL schema scripts with primary keys, foreign key constraints, and saved query views for PostgreSQL, MySQL, SQL Server, SQLite, Oracle, or ANSI SQL.",
+                    Usage = "AccessUtility.exe schema <file.mdb> [--dialect postgres|mysql|mssql|sqlite|oracle|ansi] [--output schema.sql]",
+                    Flags = new List<string> { "--dialect <postgres|mysql|mssql|sqlite|oracle|ansi>", "--output <path>" },
+                    Examples = new List<string>
+                    {
+                        "AccessUtility.exe schema Northwind97.mdb --dialect postgres --output ./northwind_pg.sql",
+                        "AccessUtility.exe schema Northwind97.mdb --dialect mssql --output ./northwind_mssql.sql"
                     }
                 },
                 new CommandDescriptor

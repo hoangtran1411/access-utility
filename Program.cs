@@ -70,7 +70,18 @@ namespace AccessUtility
                     if (args.Length < 2) { CommandRegistry.PrintCobraHelp(); return; }
                     string fmt = GetArgValue(args, "--format") ?? "sqlite";
                     string? outTarget = GetArgValue(args, "--output");
-                    RunExportCommand(args[1], fmt, outTarget);
+                    string? dialect = GetArgValue(args, "--dialect");
+                    bool schemaOnly = HasFlag(args, "--schema-only");
+                    bool dataOnly = HasFlag(args, "--data-only");
+                    int batchSize = int.TryParse(GetArgValue(args, "--batch-size"), out int bs) ? bs : 250;
+                    RunExportCommand(args[1], fmt, outTarget, dialect, schemaOnly, dataOnly, batchSize);
+                    break;
+
+                case "schema" or "ddl":
+                    if (args.Length < 2) { CommandRegistry.PrintCobraHelp(); return; }
+                    string? schemaDialect = GetArgValue(args, "--dialect");
+                    string schemaTarget = GetArgValue(args, "--output") ?? Path.ChangeExtension(args[1], ".schema.sql");
+                    RunSchemaCommand(args[1], schemaDialect, schemaTarget);
                     break;
 
                 case "password" or "pw" or "security":
@@ -511,7 +522,7 @@ namespace AccessUtility
             MaintenanceDaemon.RunDaemon(mdbPath, interval, backupDir, cts.Token);
         }
 
-        private static void RunExportCommand(string mdbPath, string format, string? outputPath = null)
+        private static void RunExportCommand(string mdbPath, string format, string? outputPath = null, string? dialect = null, bool schemaOnly = false, bool dataOnly = false, int batchSize = 250)
         {
             Console.WriteLine($"\n[+] Exporting Access 97 Database: {mdbPath} to {format.ToUpper()}");
             var db = Jet3BinaryReader.ReadDatabase(mdbPath, out var diag);
@@ -527,11 +538,36 @@ namespace AccessUtility
                 "duckdb" or "duck" => DuckDbExporter.ExportDatabase(db, string.IsNullOrEmpty(target) ? Path.ChangeExtension(mdbPath, ".duckdb") : target),
                 "jsonl" or "jsonlines" or "ndjson" => JsonLinesExporter.ExportDatabase(db, string.IsNullOrEmpty(target) ? Path.ChangeExtension(mdbPath, ".jsonl") : target),
                 "csv" => CsvExporter.ExportTable(db.Tables.Count > 0 ? db.Tables[0] : new Models.AccessTable(), string.IsNullOrEmpty(target) ? Path.ChangeExtension(mdbPath, ".csv") : target),
-                "sql" => SqlScriptExporter.ExportDatabase(db, string.IsNullOrEmpty(target) ? Path.ChangeExtension(mdbPath, ".sql") : target),
+                "sql" or "migration" => SqlMigrationExporter.ExportDatabase(db, string.IsNullOrEmpty(target) ? Path.ChangeExtension(mdbPath, ".sql") : target, new SqlMigrationOptions
+                {
+                    Dialect = SqlMigrationExporter.ParseDialect(dialect),
+                    SchemaOnly = schemaOnly,
+                    DataOnly = dataOnly,
+                    BatchSize = batchSize
+                }),
                 _ => SqliteExporter.ExportDatabase(db, string.IsNullOrEmpty(target) ? Path.ChangeExtension(mdbPath, ".sqlite") : target)
             };
 
             Console.WriteLine($"[SUCCESS] Exported successfully to: {outPath}");
+        }
+
+        private static void RunSchemaCommand(string mdbPath, string? dialect, string outputPath)
+        {
+            var parsedDialect = SqlMigrationExporter.ParseDialect(dialect);
+            Console.WriteLine($"\n[+] Generating DDL Schema for {mdbPath} [Dialect: {parsedDialect}]");
+            var db = Jet3BinaryReader.ReadDatabase(mdbPath, out _);
+            
+            var options = new SqlMigrationOptions
+            {
+                Dialect = parsedDialect,
+                SchemaOnly = true,
+                IncludeForeignKeys = true,
+                IncludeViews = true,
+                IncludeDropTable = true
+            };
+
+            string outPath = SqlMigrationExporter.ExportDatabase(db, outputPath, options);
+            Console.WriteLine($"[SUCCESS] Schema DDL exported to: {outPath}");
         }
 
         private static void RunErdCommand(string mdbPath, string? outputPath)

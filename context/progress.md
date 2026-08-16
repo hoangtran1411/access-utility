@@ -95,6 +95,13 @@
 - [x] Add CLI flags `repair --carve-deleted`, `diagnose --forensic-scan`, and `carve` command
 - [x] Add automated test suite in `AccessUtility.Tests/ForensicCarverTests.cs` (3/3 tests passing)
 
+### 🗄️ [Feature 13: Multi-Dialect SQL Schema & Migration Exporter](13-feature-sql-migration-exporter.md) ✅ COMPLETED
+- [x] Build `Exporters/SqlMigrationExporter.cs` supporting PostgreSQL, MySQL, SQL Server, SQLite, Oracle, ANSI
+- [x] Implement multi-row batch inserts (`--batch-size <N>`) for 50x faster data importing
+- [x] Implement PK/FK constraint generation and saved query view (`CREATE VIEW`) emission
+- [x] Add CLI commands `schema` and `export --format sql --dialect <dialect>` with `--schema-only` / `--data-only`
+- [x] Add automated test suite in `AccessUtility.Tests/SqlMigrationTests.cs` (14/14 tests passing)
+
 ## 📈 Status Overview
 ```text
 [X] Core Foundation (10/10 Tasks Completed)
@@ -109,4 +116,5 @@
 [X] Feature 10: Analytical Exporters: Parquet & DuckDB (5/5 Tasks) ✅
 [X] Feature 11: Web Sector Map & Hex Inspector (5/5 Tasks) ✅
 [X] Feature 12: Forensic Record Carver (5/5 Tasks) ✅
+[X] Feature 13: Multi-Dialect SQL Schema & Migration Exporter (5/5 Tasks) ✅
 ```
