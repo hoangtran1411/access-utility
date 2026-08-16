@@ -74,11 +74,12 @@
 - [x] Connect streaming iterators to CSV and SQLite exporters
 - [x] Add xUnit performance and allocation benchmarks (`AccessUtility.Tests/Jet3MemoryReaderTests.cs`)
 
-### 📊 [Feature 10: Modern Analytical Exporters (Parquet & DuckDB)](10-feature-parquet-duckdb-exporters.md) ⏳ PLANNED
-- [ ] Build `Exporters/ParquetExporter.cs` for Native AOT Parquet output
-- [ ] Build `Exporters/DuckDbExporter.cs` for direct DuckDB analytical database generation
-- [ ] Build `Exporters/JsonLinesExporter.cs` for streaming line-delimited JSON
-- [ ] Register `--format parquet`, `--format duckdb`, `--format jsonl` CLI options
+### 📊 [Feature 10: Modern Analytical Exporters (Parquet & DuckDB)](10-feature-parquet-duckdb-exporters.md) ✅ COMPLETED
+- [x] Build `Exporters/ParquetExporter.cs` for Native AOT Parquet output
+- [x] Build `Exporters/DuckDbExporter.cs` for direct DuckDB analytical database generation
+- [x] Build `Exporters/JsonLinesExporter.cs` for streaming line-delimited JSON
+- [x] Register `--format parquet`, `--format duckdb`, `--format jsonl` CLI options
+- [x] Add automated test suite in `AccessUtility.Tests/ExportersTests.cs` (7/7 tests passing)
 
 ### 🗺️ [Feature 11: Web Dashboard Sector Map, Hex Inspector & ERD](11-feature-sector-map-and-hex-inspector.md) ⏳ PLANNED
 - [ ] Implement `/api/pages` page classification endpoint in `WebServer.cs`
@@ -103,7 +104,7 @@
 [X] Feature 07: GitHub Auto Updater (4/4 Tasks) ✅
 [X] Feature 08: SQLite Log Viewer (3/3 Tasks) ✅
 [X] Feature 09: MemoryMappedFile & Streaming Engine (4/4 Tasks) ✅
-[ ] Feature 10: Analytical Exporters: Parquet & DuckDB (0/4 Tasks) ⏳
+[X] Feature 10: Analytical Exporters: Parquet & DuckDB (5/5 Tasks) ✅
 [ ] Feature 11: Web Sector Map & Hex Inspector (0/4 Tasks) ⏳
 [ ] Feature 12: Forensic Record Carver (0/4 Tasks) ⏳
 ```

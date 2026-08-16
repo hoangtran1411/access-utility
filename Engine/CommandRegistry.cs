@@ -62,11 +62,16 @@ namespace AccessUtility.Engine
                 {
                     Name = "export",
                     Aliases = new[] { "exp", "convert" },
-                    Summary = "Export database to SQLite, SQL scripts, or CSV",
-                    Description = "Converts Access 97 database schema and tables to modern storage formats.",
-                    Usage = "AccessUtility.exe export <file.mdb> [--format sqlite|sql|csv]",
-                    Flags = new List<string> { "--format <sqlite|sql|csv>" },
-                    Examples = new List<string> { "AccessUtility.exe export C:\\DB\\Main.mdb --format sqlite" }
+                    Summary = "Export database to Parquet, DuckDB, JSON Lines, SQLite, SQL, or CSV",
+                    Description = "Converts Access 97 database schema and tables to modern storage and analytical formats including Apache Parquet, DuckDB, streaming JSON Lines, SQLite, SQL scripts, and CSV.",
+                    Usage = "AccessUtility.exe export <file.mdb> [--format parquet|duckdb|jsonl|sqlite|sql|csv] [--output <path>]",
+                    Flags = new List<string> { "--format <parquet|duckdb|jsonl|sqlite|sql|csv>", "--output <path>" },
+                    Examples = new List<string> 
+                    { 
+                        "AccessUtility.exe export C:\\DB\\Main.mdb --format parquet --output ./exports/",
+                        "AccessUtility.exe export C:\\DB\\Main.mdb --format duckdb --output ./analytics.duckdb",
+                        "AccessUtility.exe export C:\\DB\\Main.mdb --format jsonl --output ./exports/" 
+                    }
                 },
                 new CommandDescriptor
                 {

@@ -230,10 +230,13 @@ namespace AccessUtility.Web
             </div>
         </div>
 
-        <div class="actions" style="margin-top: 1rem;">
+        <div class="actions" style="margin-top: 1rem; display: flex; flex-wrap: wrap; gap: 0.5rem;">
             <button class="success" onclick="compactDb()">Compact Database</button>
             <button onclick="repairDb()">Repair & Recover</button>
-            <button class="secondary" onclick="exportDb('sqlite')">Export to SQLite</button>
+            <button class="secondary" onclick="exportDb('parquet')">Export Parquet</button>
+            <button class="secondary" onclick="exportDb('duckdb')">Export DuckDB</button>
+            <button class="secondary" onclick="exportDb('jsonl')">Export JSONL</button>
+            <button class="secondary" onclick="exportDb('sqlite')">Export SQLite</button>
             <button class="secondary" onclick="exportDb('sql')">Export SQL Script</button>
         </div>
     </div>

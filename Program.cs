@@ -60,7 +60,8 @@ namespace AccessUtility
                 case "export" or "exp" or "convert":
                     if (args.Length < 2) { CommandRegistry.PrintCobraHelp(); return; }
                     string fmt = GetArgValue(args, "--format") ?? "sqlite";
-                    RunExportCommand(args[1], fmt);
+                    string? outTarget = GetArgValue(args, "--output");
+                    RunExportCommand(args[1], fmt, outTarget);
                     break;
 
                 case "password" or "pw" or "security":
@@ -419,16 +420,24 @@ namespace AccessUtility
             MaintenanceDaemon.RunDaemon(mdbPath, interval, backupDir, cts.Token);
         }
 
-        private static void RunExportCommand(string mdbPath, string format)
+        private static void RunExportCommand(string mdbPath, string format, string? outputPath = null)
         {
             Console.WriteLine($"\n[+] Exporting Access 97 Database: {mdbPath} to {format.ToUpper()}");
-            var db = Jet3BinaryReader.ReadDatabase(mdbPath, out _);
+            var db = Jet3BinaryReader.ReadDatabase(mdbPath, out var diag);
+            if (diag.CorruptPagesCount > 0)
+            {
+                Console.WriteLine($"[WARNING] Database contains {diag.CorruptPagesCount} corrupted pages. Exported data may be partial.");
+            }
 
+            string target = outputPath ?? string.Empty;
             string outPath = format.ToLower() switch
             {
-                "csv" => CsvExporter.ExportTable(db.Tables.Count > 0 ? db.Tables[0] : new Models.AccessTable(), Path.ChangeExtension(mdbPath, ".csv")),
-                "sql" => SqlScriptExporter.ExportDatabase(db, Path.ChangeExtension(mdbPath, ".sql")),
-                _ => SqliteExporter.ExportDatabase(db, Path.ChangeExtension(mdbPath, ".sqlite"))
+                "parquet" or "pq" => ParquetExporter.ExportDatabase(db, string.IsNullOrEmpty(target) ? Path.ChangeExtension(mdbPath, ".parquet") : target),
+                "duckdb" or "duck" => DuckDbExporter.ExportDatabase(db, string.IsNullOrEmpty(target) ? Path.ChangeExtension(mdbPath, ".duckdb") : target),
+                "jsonl" or "jsonlines" or "ndjson" => JsonLinesExporter.ExportDatabase(db, string.IsNullOrEmpty(target) ? Path.ChangeExtension(mdbPath, ".jsonl") : target),
+                "csv" => CsvExporter.ExportTable(db.Tables.Count > 0 ? db.Tables[0] : new Models.AccessTable(), string.IsNullOrEmpty(target) ? Path.ChangeExtension(mdbPath, ".csv") : target),
+                "sql" => SqlScriptExporter.ExportDatabase(db, string.IsNullOrEmpty(target) ? Path.ChangeExtension(mdbPath, ".sql") : target),
+                _ => SqliteExporter.ExportDatabase(db, string.IsNullOrEmpty(target) ? Path.ChangeExtension(mdbPath, ".sqlite") : target)
             };
 
             Console.WriteLine($"[SUCCESS] Exported successfully to: {outPath}");

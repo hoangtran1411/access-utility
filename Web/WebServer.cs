@@ -70,6 +70,9 @@ namespace AccessUtility.Web
                 string fmt = format?.ToLower() ?? "sqlite";
                 string outPath = fmt switch
                 {
+                    "parquet" or "pq" => ParquetExporter.ExportDatabase(db, Path.ChangeExtension(path, ".parquet")),
+                    "duckdb" or "duck" => DuckDbExporter.ExportDatabase(db, Path.ChangeExtension(path, ".duckdb")),
+                    "jsonl" or "jsonlines" or "ndjson" => JsonLinesExporter.ExportDatabase(db, Path.ChangeExtension(path, ".jsonl")),
                     "csv" => CsvExporter.ExportTable(db.Tables.Count > 0 ? db.Tables[0] : new AccessTable(), Path.ChangeExtension(path, ".csv")),
                     "sql" => SqlScriptExporter.ExportDatabase(db, Path.ChangeExtension(path, ".sql")),
                     _ => SqliteExporter.ExportDatabase(db, Path.ChangeExtension(path, ".sqlite"))

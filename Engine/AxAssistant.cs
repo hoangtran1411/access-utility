@@ -51,10 +51,13 @@ namespace AccessUtility.Engine
             {
                 plan.ActionSteps.Add("repair");
             }
-            if (lower.Contains("export") || lower.Contains("convert") || lower.Contains("sqlite") || lower.Contains("csv") || lower.Contains("sql"))
+            if (lower.Contains("export") || lower.Contains("convert") || lower.Contains("sqlite") || lower.Contains("csv") || lower.Contains("sql") || lower.Contains("parquet") || lower.Contains("duckdb") || lower.Contains("jsonl"))
             {
                 plan.ActionSteps.Add("export");
-                if (lower.Contains("csv")) plan.ExportFormat = "csv";
+                if (lower.Contains("parquet") || lower.Contains(".parquet")) plan.ExportFormat = "parquet";
+                else if (lower.Contains("duckdb") || lower.Contains("duck")) plan.ExportFormat = "duckdb";
+                else if (lower.Contains("jsonl") || lower.Contains("json lines") || lower.Contains("ndjson")) plan.ExportFormat = "jsonl";
+                else if (lower.Contains("csv")) plan.ExportFormat = "csv";
                 else if (lower.Contains("sql")) plan.ExportFormat = "sql";
                 else plan.ExportFormat = "sqlite";
             }
@@ -131,7 +134,16 @@ namespace AccessUtility.Engine
 
                     case "export":
                         var db = Jet3BinaryReader.ReadDatabase(plan.TargetFile, out _);
-                        string outPath = Exporters.SqliteExporter.ExportDatabase(db, Path.ChangeExtension(plan.TargetFile, "." + plan.ExportFormat));
+                        string ext = plan.ExportFormat.ToLower();
+                        string outPath = ext switch
+                        {
+                            "csv" => Exporters.CsvExporter.ExportTable(db.Tables.Count > 0 ? db.Tables[0] : new AccessTable(), Path.ChangeExtension(plan.TargetFile, ".csv")),
+                            "sql" => Exporters.SqlScriptExporter.ExportDatabase(db, Path.ChangeExtension(plan.TargetFile, ".sql")),
+                            "parquet" or "pq" => Exporters.ParquetExporter.ExportDatabase(db, Path.ChangeExtension(plan.TargetFile, ".parquet")),
+                            "duckdb" or "duck" => Exporters.DuckDbExporter.ExportDatabase(db, Path.ChangeExtension(plan.TargetFile, ".duckdb")),
+                            "jsonl" or "jsonlines" or "ndjson" => Exporters.JsonLinesExporter.ExportDatabase(db, Path.ChangeExtension(plan.TargetFile, ".jsonl")),
+                            _ => Exporters.SqliteExporter.ExportDatabase(db, Path.ChangeExtension(plan.TargetFile, ".sqlite"))
+                        };
                         Console.WriteLine($"   [AX] Exporter: Exported database to {outPath}");
                         break;
                 }
