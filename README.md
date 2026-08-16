@@ -1,6 +1,6 @@
 # AccessUtility 97 (.NET 10 Native AOT)
 
-[![Build & Test](https://github.com/hoangtran1411/access-utility/actions/workflows/build-and-test.yml/badge.svg)](https://github.com/hoangtran1411/access-utility/actions)
+[![CI/CD Pipeline](https://github.com/hoangtran1411/access-utility/actions/workflows/ci-cd.yml/badge.svg)](https://github.com/hoangtran1411/access-utility/actions/workflows/ci-cd.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![.NET 10](https://img.shields.io/badge/.NET-10.0%20Native%20AOT-purple.svg)](https://dotnet.microsoft.com/)
 [![Tests](https://img.shields.io/badge/Tests-80%20Passed-brightgreen.svg)](AccessUtility.Tests/)
